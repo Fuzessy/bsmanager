@@ -1,0 +1,21 @@
+<div style="display:flex;">
+  <div style="padding-right:5px;">
+    <span style="vertical-align: sub">{{label}}</span>
+  </div>
+  <div style="width:100%">
+    <div style="display:flex; margin-right:0px;">
+      <input type="text"
+             #numberInput
+             class="fuz-input"
+             [disabled]="isDisabled"
+             [ngClass]="inputClass"
+             (input)="onInputChange($event)"
+             (keypress)="onKeyDown($event)"
+             style="width:100%;
+             margin-bottom:0;">
+    </div>
+    <div *ngIf="errors.length > 0">
+        <div *ngFor="let error of errors">{{error.message}}</div>
+    </div>
+  </div>
+</div>

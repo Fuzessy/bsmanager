@@ -1,0 +1,123 @@
+<div class="menu">
+  <div style="width:100%; padding:5px; text-align:center">
+    Számlatörténet
+  </div>
+  <div class="container w-100">
+    <div style="width: 100%;">
+      <form #form="ngForm" (ngSubmit)="onSearchByFilter()">
+        <div class="card">
+
+          <div class="card-header">
+            <div class="btn-toolbar" role="toolbar">
+              <div class="btn-group mr-2" role="group">
+                <button type="submit" class="btn btn-sm btn-success"> Keresés </button>
+                <button type="button" class="btn btn-sm btn-danger" (click)="clearFilters()"> Szűrők törlése </button>
+              </div>
+            </div>
+          </div>
+
+          <div class="card-body">
+
+            <div class="form-row">
+
+              <div class="form-group input-group input-group-sm col-lg-6 col-sm-12">
+                <div class="input-group-prepend">
+                  <span class="input-group-text" id="account">Számla</span>
+                </div>
+                <select class="form-control"
+                        name="account"
+                        placeholder="Számla" aria-label="Számla" aria-describedby="account"
+                        [(ngModel)]="selectedAccount"
+                        required>
+                  <option *ngFor="let a of accounts" [ngValue]="a">
+                    {{a.name}}
+                  </option>
+                </select>
+              </div>
+
+              <div class="form-group input-group input-group-sm col-lg-6 col-sm-12">
+                <div class="input-group-prepend">
+                  <span class="input-group-text" id="label_from_to">Időszak(tól/ig)</span>
+                </div>
+                <input type="date" class="form-control"
+                       name="transactionDateFrom"
+                       placeholder="..tól" aria-label="..tól" aria-describedby="label_from_to"
+                       [(ngModel)]="transactionDateFrom">
+                <input type="date" class="form-control"
+                       name="transactionDateTo"
+                       placeholder="..ig" aria-label="..ig" aria-describedby="label_from_to"
+                       [(ngModel)]="transactionDateTo">
+              </div>
+
+            </div>
+
+          </div>
+        </div>
+      </form>
+    </div>
+    <div style="width: 100%;">
+      <table class="table table-sm table-striped table-hover">
+        <thead class="thead-light">
+        <tr>
+          <th>#</th>
+          <th>Értéknap</th>
+          <th>Számla</th>
+          <th>Összeg</th>
+          <th>Egyenleg</th>
+          <th>Megjegyzés</th>
+          <th>Műveletek</th>
+        </tr>
+        </thead>
+        <tbody>
+        <tr *ngFor="let i of model">
+          <th>{{i.orderNumber}}</th>
+          <td>{{i.transactionDate | date:'yyyy.MM.dd.' }}</td>
+          <td>{{i.targetAccount.name}}</td>
+          <td>{{i.amount}}</td>
+          <td>{{i.balance}}</td>
+          <td>{{i.note}}</td>
+          <td>
+            <mat-icon class="table-action-icon" title="Előre" (click)="moveAhead(i)">arrow_upward</mat-icon>
+            <mat-icon class="table-action-icon" title="Hátra" (click)="moveBack(i)">arrow_downward</mat-icon>
+            <mat-icon class="table-action-icon" title="Szerkeszt" (click)="edit(i)">edit</mat-icon>
+            <mat-icon class="table-action-icon" style="color:darkred;" title="Töröl" (click)="edit(i)">delete</mat-icon>
+          </td>
+        </tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+</div>
+
+<div class="modal fade" id="editFinanceItemModal" #editFinanceItemModal tabindex="-1" role="dialog" aria-labelledby="editFinanceItemModalLongTitle" aria-hidden="true">
+  <div class="modal-dialog modal-lg" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="exampleModalLongTitle">Tranzakció szerkesztése</h5>
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div *ngIf="showFinanceItem" class="modal-body">
+        <app-add-item [(financeItem)]="selectedFinanceItem" mode="update" (onOperationFinished)="onUpdateFinished()"></app-add-item>
+      </div>
+    </div>
+  </div>
+</div>
+
+
+<div class="modal fade" id="alertModal" #alertModal tabindex="-1" role="dialog" aria-labelledby="alertModalLongTitle" aria-hidden="true">
+  <div class="modal-dialog modal-lg" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="alertModalLongTitle">Hiba történt a kérés feldolgozása során!</h5>
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body">
+        {{errorMessage}}
+      </div>
+    </div>
+  </div>
+</div>

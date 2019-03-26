@@ -1,0 +1,113 @@
+
+  <div style="display: flex; flex-flow: row wrap; padding-left:5px;">
+    <div style="width:100%; padding:5px; text-align:center">
+      Új tétel rögzítése
+    </div>
+    <div *ngIf="!operationFinished" style="width:100%; padding:5px;">
+      <div class="container d-flex w-75">
+        <form #form="ngForm" (ngSubmit)="onSubmitFinancialItem()">
+          <div class="">
+            <div class="form-row align-self-center">
+
+              <div class="form-group input-group input-group-sm col-md-6 col-sm-12">
+                <div class="input-group-prepend">
+                  <span class="input-group-text" id="label_osszeg">Összeg</span>
+                </div>
+                <input type="number" class="form-control"
+                       #transactionAmountField
+                       name="transactionAmount"
+                       placeholder="Összeg" aria-label="Összeg" aria-describedby="label_osszeg"
+                       [(ngModel)]="amount"
+                       required>
+              </div>
+
+              <div class="form-group input-group input-group-sm col-md-6 col-sm-12">
+                <div class="input-group-prepend">
+                  <span class="input-group-text" id="creditOrDebit">Terhelés/Jóváírás</span>
+                </div>
+                <select class="form-control"
+                       name="creditOrDebit"
+                       placeholder="Összeg" aria-label="Terhelés/Jóváírás" aria-describedby="creditOrDebit"
+                       [(ngModel)]="selectedCreditOrDebit"
+                       required>
+                  <option *ngFor="let i of creditOrDebit" [ngValue]="i">
+                    {{i.name}}
+                  </option>
+                </select>
+              </div>
+
+              <div class="form-group input-group input-group-sm col-md-12 col-sm-12">
+                <div class="input-group-prepend">
+                  <span class="input-group-text" id="note">Megjegyzés</span>
+                </div>
+                <input class="form-control"
+                       type="text"
+                       name="note"
+                       placeholder="Megjegyzés" aria-label="Megjegyzés" aria-describedby="note"
+                       [(ngModel)]="note"/>
+              </div>
+
+              <div class="form-group input-group input-group-sm col-md-12 col-sm-12">
+                <div class="input-group-prepend">
+                  <span class="input-group-text" id="category">Kategória</span>
+                </div>
+                <select class="form-control"
+                        name="category"
+                        placeholder="Kategória" aria-label="Kategória" aria-describedby="category"
+                        [(ngModel)]="selectedFinItemCategorie"
+                        required>
+                  <option *ngFor="let c of finItemCategories" [ngValue]="c">
+                    {{c.name}}
+                  </option>
+                </select>
+              </div>
+
+              <div class="form-group input-group input-group-sm col-md-12 col-sm-12">
+                <div class="input-group-prepend">
+                  <span class="input-group-text" id="account">Számla</span>
+                </div>
+                <select class="form-control"
+                        name="account"
+                        placeholder="Számla" aria-label="Számla" aria-describedby="account"
+                        [(ngModel)]="selectedAccount"
+                        required>
+                  <option *ngFor="let a of accounts" [ngValue]="a">
+                    {{a.name}}
+                  </option>
+                </select>
+              </div>
+
+
+              <div class="form-group input-group input-group-sm col-md-8 col-sm-12">
+                <div class="input-group-prepend">
+                  <span class="input-group-text" id="transactionDate">Tranzakció dátuma</span>
+                </div>
+                <input type="date" class="form-control"
+                       name="transactionDate"
+                       placeholder="Tranzakció dátuma" aria-label="Tranzakció dátuma" aria-describedby="transactionDate"
+                       [(ngModel)]="transactionDateModel"
+                       required>
+              </div>
+            </div>
+          </div>
+
+          <div>
+            <button type="submit" class="btn btn-primary"
+                    [disabled]="!form.valid">
+              <span *ngIf="mode === 'insert'">Rögzítés</span>
+              <span *ngIf="mode === 'update'">Módosítás</span>
+            </button>
+          </div>
+        </form>
+      </div>
+    </div>
+
+
+    <div *ngIf="operationFinished" class="alert alert-success" role="alert">
+      <h4 class="alert-heading">Rögzítés sikeres!</h4>
+      <p>
+        <button  class="btn btn-success" (click)="initData()">Új rögzítés!</button>
+      </p>
+    </div>
+
+  </div>

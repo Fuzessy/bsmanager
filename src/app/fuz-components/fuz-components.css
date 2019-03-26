@@ -1,0 +1,18 @@
+.fuz-input{
+  padding: 4px;
+  border-radius: 3px 3px 3px 3px;
+  border-color: blue;
+  border-width: 1px;
+  margin: 2px;
+  height:15px;
+}
+
+.input-valid{
+  background-color: rgb(212, 255, 202);
+  border-color: rgb(156, 255, 136);
+}
+
+.input-error{
+  background-color: rgb(255, 202, 200);
+  border-color: rgb(255, 76, 74);
+}

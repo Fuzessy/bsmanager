@@ -1,0 +1,42 @@
+
+/* You can add global styles to this file, and also import other style files */
+
+* {
+  margin:0px;
+  padding:0px;
+}
+
+*:focus{
+  outline-width: 0px;
+}
+
+.table-action-icon{
+  color: #0019a5;
+  font-size: 17px;
+  cursor: pointer;
+}
+
+.table-action-icon:hover {
+  color: #f18a4e;
+  transition: color cubic-bezier(0.4, 0, 1, 1) 0.3s;
+}
+
+.table-action-icon:active {
+  color: #b14b4b;
+  font-weight: bold;
+}
+
+.table-action-icon-disabled{
+  color: #7f8791;
+  cursor:default;
+}
+
+.table-action-icon-disabled:hover{
+  color:grey;
+}
+
+.table-action-icon-disabled:active{
+  color:grey;
+  font-weight: normal;
+}
+

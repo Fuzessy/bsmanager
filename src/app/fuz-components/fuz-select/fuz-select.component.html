@@ -1,0 +1,37 @@
+<script src="fuz-select.component.ts"></script>
+<div style="display:flex;">
+  <div style="padding-right:5px;">
+    <span style="vertical-align: sub">{{label}}</span>
+  </div>
+  <div style="width:100%">
+    <div style="display:flex; margin-right:0px;"
+      (focusout)="inputFocusOut()">
+      <input type="text"
+             #selectInput
+             class="fuz-input"
+             (click)="showItems('')"
+             (focus)="showItems('')"
+             (input)="onSearchChange($event.target.value)"
+             style="width:100%; margin-right:0px;
+             border-right-width:0px;
+             border-top-right-radius: 0px;
+             border-bottom-right-radius: 0px;
+             margin-bottom:0;">
+      <div class="select-down"
+           (click)="showItems('toggle')">
+        <i class="material-icons">
+          keyboard_arrow_down
+        </i>
+      </div>
+    </div>
+    <div style="position: relative; margin:-1px 2px 0 2px; padding:0;">
+      <div class="item-container" [ngClass]="itemContainerClass">
+          <div class="selectItem" *ngFor="let i of modelItems"
+            (click)="selectElement(i)"
+          >
+            <div [innerHtml]="i.htmlValue | safeHtml"></div>
+          </div>
+      </div>
+    </div>
+  </div>
+</div>

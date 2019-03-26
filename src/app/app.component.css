@@ -1,0 +1,124 @@
+@import url('https://fonts.googleapis.com/css?family=Averia+Serif+Libre');
+
+.header {
+  background-color: #041775;
+  padding-top: 5px;
+  padding-bottom: 5px;
+  color:whitesmoke;
+}
+
+.menutoggle{
+  color:white;
+  cursor: pointer;
+}
+
+.menutogglePressed{
+  background-color: white;
+  color: black;
+  border-radius: 2px;
+  transition-duration: 100ms;
+}
+
+.menutoggle:hover{
+  background-color: #04115b;
+  border-radius: 2px;
+  transition-duration: 450ms;
+}
+
+.contentDiv{
+  display:flex;
+  flex-direction:row;
+}
+.sideMenu{
+  width: 230px;
+  background-color: #202050;
+  color: #f5e3da;
+  padding:0px 0px 0px 0px;
+  min-width: 100px;
+  font-family: 'Averia Serif Libre';
+  letter-spacing: 1px;
+  background-image: linear-gradient(to right,#0a2650, #2c1a50);
+  border-bottom-right-radius: 4px;
+}
+
+.menuItem{
+
+  align-items: center;
+  padding: 2px 2px 0px 2px;
+  cursor: pointer;
+}
+
+.mainMenuItem{
+  display:flex;
+  border-width: 0px 0px 1px 0px;
+  border-style: solid;
+}
+
+.menuItem:hover{
+  color: #ffcc62;
+  background-image: radial-gradient(circle, #363550, #202050);
+  transition:color 1s, background-image 1s;
+}
+
+.menuItem div{
+  display:flex;
+  width:100%;
+  align-items: center;
+  padding-left: 10px;
+}
+
+.menuItem mat-icon{
+  display:flex;
+  align-items: center;
+  font-size: 20px;
+}
+
+.menuItemHide{
+  margin-left: -230px;
+  opacity:0;
+  box-shadow: 10px 10px 10px 10px #202050;
+  text-shadow: 10px 10px 10px 10px #202050;
+  visibility:hidden;
+  transition: margin 1.5s, visibility 1.5s, opacity 1s, box-shadow 1s, text-shadow 1s;
+}
+
+.menuItem:hover .arrow{;
+  background-image: radial-gradient(circle, rgba(74, 73, 14, 0.71) 2px, rgba(1,1,1,0) 10px);
+}
+
+.menuItemShow{
+  margin-left: 0px;
+  transition: margin 1.5s, visibility 1.5s, opacity 1s, box-shadow 1s, text-shadow 1s;
+}
+
+.subMenuItem{
+  margin-left: 20px;
+  border-width: 0px 0px 1px 0px;
+  border-style: solid;
+  border-color: #2e3548;
+}
+
+.arrowOpen{
+  color: #ffcc62;
+  transform: rotate(-180deg);
+  transition: transform 0.3s, color 0.3s;
+}
+
+.arrowClose{
+  transition: transform 0.3s, color 0.3s;
+}
+
+.subMenuOpen{
+  max-height:500px;
+  transition: max-height 0.3s ease-in;
+}
+
+.subMenuClose{
+  max-height:0;
+  overflow: hidden;
+  transition: max-height 0.3s ease-out;
+}
+.menuMain{
+  display: flex;
+  flex-flow: row wrap;
+}
