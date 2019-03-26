@@ -1,7 +1,6 @@
 import { Injectable } from '@angular/core';
 import {HttpClient} from "@angular/common/http";
 import {Path} from "../../fuz-common/service/path";
-import {ApplicationUser} from "../model/application-user";
 import {Credentials} from "../model/credentials";
 
 @Injectable({

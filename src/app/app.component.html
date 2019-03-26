@@ -13,24 +13,28 @@
 </div>
 
 <div class="contentDiv">
-  <div class="sideMenu" [ngClass]="isMenuToggleOn ? 'menuItemShow' : 'menuItemHide'">
-    <div *ngFor="let menuItem of menu">
-      <div class="menuItem mainMenuItem" (click)="toggleMenuItem(menuItem.id)">
-        <mat-icon>{{menuItem.icon}}</mat-icon>
-        <div>{{menuItem.label}}</div>
-        <mat-icon class="arrow" [ngClass]="menuItem.open === true ? 'arrowOpen' : 'arrowClose'">arrow_drop_down</mat-icon>
-      </div>
-      <div *ngFor="let submenu of menuItem.subMenuItems" [ngClass]="menuItem.open === true ? 'subMenuOpen' : 'subMenuClose'">
-        <div class="menuItem subMenuItem" routerLink="/{{submenu.link}}">
-          {{submenu.label}}
+  <div *ngIf="authenticated()">
+    <div class="sideMenu" [ngClass]="isMenuToggleOn ? 'menuItemShow' : 'menuItemHide'">
+      <div *ngFor="let menuItem of menu">
+        <div class="menuItem mainMenuItem" (click)="toggleMenuItem(menuItem.id)">
+          <mat-icon>{{menuItem.icon}}</mat-icon>
+          <div>{{menuItem.label}}</div>
+          <mat-icon class="arrow" [ngClass]="menuItem.open === true ? 'arrowOpen' : 'arrowClose'">arrow_drop_down</mat-icon>
+        </div>
+        <div *ngFor="let submenu of menuItem.subMenuItems" [ngClass]="menuItem.open === true ? 'subMenuOpen' : 'subMenuClose'">
+          <div class="menuItem subMenuItem" routerLink="/{{submenu.link}}">
+            {{submenu.label}}
+          </div>
         </div>
       </div>
     </div>
+    <div style="width:100%;">
+      <router-outlet></router-outlet>
+    </div>
   </div>
-  <div style="width:100%;">
-    <router-outlet></router-outlet>
+  <div style="width: 100%" *ngIf="!authenticated()">
+    <app-login></app-login>
   </div>
-
 </div>
 
 

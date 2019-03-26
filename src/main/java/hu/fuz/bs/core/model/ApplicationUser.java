@@ -8,7 +8,7 @@ import lombok.NoArgsConstructor;
 import javax.persistence.*;
 
 @Entity
-@Data @Builder @AllArgsConstructor
+@Data @Builder @AllArgsConstructor @NoArgsConstructor
 public class ApplicationUser {
   @Id @GeneratedValue(strategy = GenerationType.IDENTITY)
   private long id;

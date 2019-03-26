@@ -1,4 +1,5 @@
 import {Component, OnInit} from '@angular/core';
+import {AuthenticationService} from "./core/service/authentication.service";
 
 @Component({
   selector: 'app-root',
@@ -51,11 +52,15 @@ export class AppComponent implements OnInit{
     }
   ];
 
-  constructor(){
+  constructor( private authenticationService : AuthenticationService){
 
   }
 
   ngOnInit(){
+  }
+
+  authenticated(){
+    return this.authenticationService.isAuthenticated();
   }
 
   toggleMenu() {

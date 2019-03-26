@@ -12,6 +12,9 @@ import {LoginComponent} from "./login/login.component";
     CommonModule,
     FormsModule,
     BrowserModule
+  ],
+  exports:[
+    LoginComponent
   ]
 })
 export class CoreModule { }
