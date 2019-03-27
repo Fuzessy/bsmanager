@@ -64,7 +64,9 @@ export class AddItemComponent implements AfterViewInit {
   transactionDateModel : string;
   note: string;
 
-  public operationFinished: boolean = false;
+  operationFinished: boolean = false;
+  isTransfer: boolean = false;
+
   constructor(private financialService :FinancialService) {
     this.financialService.getFinancialItemCategories().subscribe(
       value => {
@@ -134,6 +136,15 @@ export class AddItemComponent implements AfterViewInit {
         this.onOperationFinished.emit();
       })
       .catch( err =>{ console.log('Hiba történt: ' + err);})
+  }
+
+  transferToggle(event){
+    if(event.target.checked === true){
+      this.isTransfer = true;
+    }else{
+      this.isTransfer = false;
+    }
+
   }
 
   private createFinanceItemFromFields() {

@@ -9,6 +9,7 @@ import hu.fuz.bs.finance.model.Account;
 import hu.fuz.bs.finance.model.FinanceItem;
 import hu.fuz.bs.finance.model.FinancialItemCategory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Component;
 
 import java.math.BigDecimal;
@@ -22,13 +23,14 @@ public class Initializer {
     @Autowired private AccountRepository accountRepository;
     @Autowired private FinanceItemRepository financeItemRepository;
     @Autowired private ApplicationUserRepository applicationUserRepository;
+    @Autowired private BCryptPasswordEncoder passwordEncoder;
 
     public void init(){
         applicationUserRepository.save(ApplicationUser.builder()
-          .id(1L).nickName("Zsolti").fullName("Füzesi Zsolt").password("jelszó").userName("zsolti").build());
+          .id(1L).nickName("Zsolti").fullName("Füzesi Zsolt").password(passwordEncoder.encode("jelszó")).userName("zsolti").build());
 
         applicationUserRepository.save(ApplicationUser.builder()
-          .id(2L).nickName("Barbi").fullName("Ecseri barbara").password("jelszó").userName("barbi").build());
+          .id(2L).nickName("Barbi").fullName("Ecseri barbara").password(passwordEncoder.encode("jelszó")).userName("barbi").build());
 
         financeItemCategoryRepository.save( new FinancialItemCategory(1L,"étel"));
         financeItemCategoryRepository.save( new FinancialItemCategory(2L,"gyógyszer"));

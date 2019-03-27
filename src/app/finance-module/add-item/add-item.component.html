@@ -64,7 +64,7 @@
 
               <div class="form-group input-group input-group-sm col-md-12 col-sm-12">
                 <div class="input-group-prepend">
-                  <span class="input-group-text" id="account">Számla</span>
+                  <span class="input-group-text" id="account">Forrásszámla</span>
                 </div>
                 <select class="form-control"
                         name="account"
@@ -87,6 +87,35 @@
                        placeholder="Tranzakció dátuma" aria-label="Tranzakció dátuma" aria-describedby="transactionDate"
                        [(ngModel)]="transactionDateModel"
                        required>
+              </div>
+
+              <div class="col-md-4 col-sm-12"></div>
+
+              <div class="form-group input-group input-group-sm  col-md-12 col-sm-12">
+                <div class="form-check">
+                  <input class="form-check-input" type="checkbox"
+                         name="isTransfer"
+                         value="" id="isTransfer" [ngModel]="isTransfer"
+                         (change)="transferToggle($event)">
+                  <label class="form-check-label" for="isTransfer">
+                    Átvezetés
+                  </label>
+                </div>
+              </div>
+
+              <div class="form-group input-group input-group-sm col-md-8 col-sm-12" *ngIf="isTransfer">
+                <div class="input-group-prepend">
+                  <span class="input-group-text" id="targetaccount">Célszámla</span>
+                </div>
+                <select class="form-control"
+                        name="targetaccount"
+                        placeholder="Célszámla" aria-label="Célszámla" aria-describedby="targetaform-group input-group input-group-smccount"
+                        [(ngModel)]="selectedTargetAccount"
+                        required>
+                  <option *ngFor="let a of accounts" [ngValue]="a">
+                    {{a.name}}
+                  </option>
+                </select>
               </div>
             </div>
           </div>

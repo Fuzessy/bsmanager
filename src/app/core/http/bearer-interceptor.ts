@@ -12,12 +12,13 @@ export class BearerInterceptor implements HttpInterceptor {
   intercept(req: HttpRequest<any>, next: HttpHandler) {
     if (this.authenticationService.isAuthenticated()){
       const xhr = req.clone({
-        headers: req.headers.set('Authorization', 'Bearer ' + this.authenticationService.getToken())
+        headers: req.headers.set(
+          this.authenticationService.TOKEN_HEADER_KEY,
+          this.authenticationService.TOKEN_PREFIX + this.authenticationService.getToken())
       });
       return next.handle(xhr);
     }else{
       return next.handle(req);
     }
-
   }
 }

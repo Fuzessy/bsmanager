@@ -8,12 +8,13 @@
 
         <form #loginForm="ngForm" (submit)="login()">
           <div class="form-group">
-            <label for="uusername">Felhasználónév</label>
+            <label for="username">Felhasználónév</label>
             <input type="text"
                    class="form-control"
-                   id="uusername"
-                   name="uusername"
+                   id="username"
+                   name="username"
                    required
+                   [(ngModel)]="credentials.username"
                    >
             <div class="invalid-feedback">
               Mező kitölése kötelező!

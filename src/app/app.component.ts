@@ -63,6 +63,11 @@ export class AppComponent implements OnInit{
     return this.authenticationService.isAuthenticated();
   }
 
+  logout(){
+    this.authenticationService.logout();
+
+  }
+
   toggleMenu() {
     this.isMenuToggleOn = !this.isMenuToggleOn;
   }

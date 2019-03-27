@@ -32,7 +32,7 @@ export class FinancialService {
 
   public getUserAccounts() : Observable<FinAccount[]>{
     return this.httpClient.get<FinAccount[]>(
-      this.path.URL("/finance/applicationUser-account"));
+      this.path.URL("/finance/user-account"));
   }
 
   public getFinancialItems(filter: { transactionDateFrom: string; transactionDateTo: string; accountId: number }) : Observable<FinancialItem[]>{

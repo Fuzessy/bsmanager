@@ -1,4 +1,4 @@
-<div class="header">
+<div class="header" *ngIf="authenticated()">
   <div style="display:flex; padding-left:2px; padding-right:2px;">
     <div style="align-items: left">
         <mat-icon id="mainToggleMenuId" class="menutoggle" [ngClass]="isMenuToggleOn ? 'menutogglePressed' : ''" (click)="toggleMenu()">menu</mat-icon>
@@ -7,13 +7,13 @@
       <div style="text-align:center; color:white; font-family: Georgia; font-size: 20px;">BS</div>
     </div>
     <div style="align-items: right">
-      <mat-icon>search</mat-icon>
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                  <mat-icon matTooltip="Info about the action" class="menutoggle"  (click)="logout()">exit_to_app</mat-icon>
     </div>
   </div>
 </div>
 
-<div class="contentDiv">
-  <div *ngIf="authenticated()">
+<div>
+  <div *ngIf="authenticated()" class="contentDiv">
     <div class="sideMenu" [ngClass]="isMenuToggleOn ? 'menuItemShow' : 'menuItemHide'">
       <div *ngFor="let menuItem of menu">
         <div class="menuItem mainMenuItem" (click)="toggleMenuItem(menuItem.id)">
@@ -32,7 +32,8 @@
       <router-outlet></router-outlet>
     </div>
   </div>
-  <div style="width: 100%" *ngIf="!authenticated()">
+
+  <div style="width: 100%; padding-top:20px;" *ngIf="!authenticated()">
     <app-login></app-login>
   </div>
 </div>
