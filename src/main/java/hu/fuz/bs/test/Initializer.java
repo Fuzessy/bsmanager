@@ -32,11 +32,11 @@ public class Initializer {
         applicationUserRepository.save(ApplicationUser.builder()
           .id(2L).nickName("Barbi").fullName("Ecseri barbara").password(passwordEncoder.encode("jelszó")).userName("barbi").build());
 
-        financeItemCategoryRepository.save( new FinancialItemCategory(1L,"étel"));
-        financeItemCategoryRepository.save( new FinancialItemCategory(2L,"gyógyszer"));
-        financeItemCategoryRepository.save( new FinancialItemCategory(3L,"benzin"));
-        financeItemCategoryRepository.save( new FinancialItemCategory(4L,"Zsolti család"));
-        financeItemCategoryRepository.save( new FinancialItemCategory(5L,"Barbi család"));
+        financeItemCategoryRepository.save( FinancialItemCategory.builder().id(1L).name("étel").build());
+        financeItemCategoryRepository.save( FinancialItemCategory.builder().id(2L).name("gyógyszer").build());
+        financeItemCategoryRepository.save( FinancialItemCategory.builder().id(3L).name("benzin").build());
+        financeItemCategoryRepository.save( FinancialItemCategory.builder().id(4L).name("Zsolti család").build());
+        financeItemCategoryRepository.save( FinancialItemCategory.builder().id(5L).name("Barbi család").build());
 
         accountRepository.save(new Account(1L,"OTP számla",1));
         accountRepository.save(new Account(2L,"Takarék számla",2));
@@ -49,7 +49,7 @@ public class Initializer {
         financeItem.setBalance(new BigDecimal("-10"));
         financeItem.setOrderNumber(0);
         financeItem.setCategory(financeItemCategoryRepository.findById(1L).get());
-        financeItem.setTargetAccount(accountRepository.findAccountByOrderNumber(1).get());
+        financeItem.setSourceAccount(accountRepository.findAccountByOrderNumber(1).get());
         financeItem.setTransactionDate(LocalDate.now().minusDays(10));
         financeItem.setRecordTimestamp(new Date());
         financeItem.setRecordUser(applicationUserRepository.findById(1L).get());
@@ -60,7 +60,7 @@ public class Initializer {
         financeItem.setBalance(new BigDecimal("90"));
         financeItem.setOrderNumber(1);
         financeItem.setCategory(financeItemCategoryRepository.findById(1L).get());
-        financeItem.setTargetAccount(accountRepository.findAccountByOrderNumber(1).get());
+        financeItem.setSourceAccount(accountRepository.findAccountByOrderNumber(1).get());
         financeItem.setTransactionDate(LocalDate.now().minusDays(1));
         financeItem.setRecordTimestamp(new Date());
       financeItem.setRecordUser(applicationUserRepository.findById(1L).get());
@@ -71,7 +71,7 @@ public class Initializer {
         financeItem.setBalance(new BigDecimal("100"));
         financeItem.setOrderNumber(2);
         financeItem.setCategory(financeItemCategoryRepository.findById(1L).get());
-        financeItem.setTargetAccount(accountRepository.findAccountByOrderNumber(1).get());
+        financeItem.setSourceAccount(accountRepository.findAccountByOrderNumber(1).get());
         financeItem.setTransactionDate(LocalDate.now());
         financeItem.setRecordTimestamp(new Date());
       financeItem.setRecordUser(applicationUserRepository.findById(2L).get());

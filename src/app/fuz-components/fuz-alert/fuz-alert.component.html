@@ -1,0 +1,12 @@
+<h1 mat-dialog-title>{{fuzAlertData.title}}</h1>
+<mat-dialog-content>
+  <div class="fuz-alert-message">{{fuzAlertData.message}}</div>
+  <mat-divider *ngIf="fuzAlertData.details"></mat-divider>
+  <div class="fuz-alert-detail" *ngIf="fuzAlertData.details">{{fuzAlertData.details}}</div>
+</mat-dialog-content>
+<mat-dialog-actions>
+  <button mat-button *ngIf="isButtonVisible('YES')" (click)="yes()">Igen</button>
+  <button mat-button *ngIf="isButtonVisible('NO')" (click)="no()">Nem</button>
+  <button mat-button *ngIf="isButtonVisible('CANCEL')" (click)="cancel()">Mégsem</button>
+  <button mat-button *ngIf="isButtonVisible('OK')" (click)="ok()">OK</button>
+</mat-dialog-actions>

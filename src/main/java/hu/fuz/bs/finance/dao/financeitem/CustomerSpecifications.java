@@ -20,7 +20,7 @@ public class CustomerSpecifications {
 
     public static Specification<FinanceItem> accountIdIs(long accountId) {
         return  (root,  query, builder) -> {
-            return builder.equal(root.get(FinanceItem_.targetAccount).get("Id"),accountId);
+            return builder.equal(root.get(FinanceItem_.sourceAccount).get("Id"),accountId);
         };
     }
 

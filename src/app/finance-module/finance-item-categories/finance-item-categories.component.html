@@ -1,0 +1,31 @@
+<div class="menu">
+  <div style="width:100%; padding:5px; text-align:center">
+    Tételtípusok
+  </div>
+  <div class="container w-100">
+    <div style="width: 100%;" class="row justify-content-center">
+      <table class="table table-sm table-striped table-hover col-6">
+        <thead class="thead-light">
+        <tr>
+          <th>#</th>
+          <th>Megnevezés</th>
+          <th>Státusz</th>
+          <th>Műveletek</th>
+        </tr>
+        </thead>
+        <tbody>
+        <tr *ngFor="let i of financeItemCategories">
+          <th>{{i.id}}</th>
+          <td>{{i.name}}</td>
+          <td>{{i.alive ? "Aktív" : "Passzív"}}</td>
+          <td>
+            <mat-icon class="table-action-icon" title="Átnevezés" (click)="rename(i)">create</mat-icon>
+            <mat-icon class="table-action-icon" title="Aktiválás" (click)="activate(i)" *ngIf="!i.alive">restore</mat-icon>
+            <mat-icon class="table-action-icon" title="Passziválás" (click)="passivate(i)" style="color:darkred;" *ngIf="i.alive">highlight_off</mat-icon>
+          </td>
+        </tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+</div>

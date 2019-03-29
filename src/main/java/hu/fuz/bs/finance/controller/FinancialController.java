@@ -27,100 +27,157 @@ import static org.hibernate.criterion.Restrictions.and;
 @Controller
 public class FinancialController {
 
-    @Autowired private AccountRepository accountRepository;
-    @Autowired private FinanceItemCategoryRepository financeItemCategoryRepository;
-    @Autowired private FinanceItemRepository financeItemRepository;
-    @Autowired private TransactionHandler transactionHandler;
+  @Autowired
+  private AccountRepository accountRepository;
+  @Autowired
+  private FinanceItemCategoryRepository financeItemCategoryRepository;
+  @Autowired
+  private FinanceItemRepository financeItemRepository;
+  @Autowired
+  private TransactionHandler transactionHandler;
 
-    public Iterable<Account> getUserAccounts() {
-        return accountRepository.findAll();
+  public Iterable<Account> getUserAccounts() {
+    return accountRepository.findAll();
+  }
+
+  public Iterable<FinanceItem> getFinancialItems(Optional<LocalDate> transactionDateFrom,
+                                                 Optional<LocalDate> transactionDateTo, int accountId) {
+    List<Specification<FinanceItem>> filters = new ArrayList<>();
+
+    filters.add(accountIdIs(accountId));
+    transactionDateTo.ifPresent(localDate -> filters.add(lessThanEq(localDate)));
+    transactionDateFrom.ifPresent(localDate -> filters.add(greaterThanEq(localDate)));
+
+    Specification<FinanceItem> spec = null;
+    for (Specification<FinanceItem> s : filters) {
+      if (spec == null) {
+        spec = s;
+      } else {
+        spec = spec.and(s);
+      }
     }
 
-    public Iterable<FinanceItem> getFinancialItems(Optional<LocalDate> transactionDateFrom,
-                                                   Optional<LocalDate> transactionDateTo, int accountId) {
-      List<Specification> filters = new ArrayList<>();
+    return financeItemRepository.findAll(
+      spec,
+      Sort.by(Sort.Order.desc(FinanceItem_.orderNumber.getName())));
+  }
 
-      filters.add(accountIdIs(accountId));
-      transactionDateTo.ifPresent(localDate -> filters.add(lessThanEq(localDate)));
-      transactionDateFrom.ifPresent(localDate -> filters.add(greaterThanEq(localDate)));
-
-      return financeItemRepository.findAll((a, b, c) ->  c.and(),
-              Sort.by(Sort.Order.desc(FinanceItem_.orderNumber.getName())));
+  @Transactional(isolation = Isolation.REPEATABLE_READ)
+  public void createFinancialItem(FinanceItem financeItem) {
+    if (financeItem.getTargetAccount() != null
+      && financeItem.getSourceAccount() != null
+      && financeItem.getTargetAccount().getId().equals(financeItem.getSourceAccount().getId())) {
+      throw new FinancialExceptions("A forrás- és célszámla nem lehet ugyanaz!");
     }
 
-    @Transactional(isolation = Isolation.REPEATABLE_READ)
-    public void createFinancialItem(FinanceItem financeItem) {
-           financeItem.setId(null);
-        financeItem.setRecordTimestamp(new Date());
-        financeItem.setBalance(BigDecimal.ZERO);
+    transactionHandler.createSingleFinanceItem(financeItem);
 
-        transactionHandler.setBalanceAndOrderByLastFinanceItem(financeItem);
-        financeItemRepository.save(financeItem);
-        transactionHandler.updateFinanceItemBalanceAnfOrderNumber();
+    if (financeItem.getTargetAccount() != null) {
+      transactionHandler.createFinanceItemForTargetAccount(financeItem);
+    }
+  }
+
+  public Iterable<FinancialItemCategory> getFinancialItemCategories() {
+    return financeItemCategoryRepository.findAll();
+  }
+
+  public void updateFinancialItem(FinanceItem financeItem) {
+    FinanceItem toUpdate = ControllerUtility.getOrNotFound(
+      financeItemRepository.findById(financeItem.getId()),
+      "Transaction not found!");
+
+    if (toUpdate.getTargetAccount() != null || financeItem.getTargetAccount() != null) {
+      if (Account.equalsItems(toUpdate.getSourceAccount(), financeItem.getSourceAccount())) {
+        throw new FinancialExceptions("Számlák közötti átvezetés esetén a forrásszámla módosítását még nem implementáltam!");
+      }
+      if (Account.equalsItems(toUpdate.getTargetAccount(), financeItem.getTargetAccount())) {
+        throw new FinancialExceptions("Számlák közötti átvezetés esetén a célszámla módosítását még nem implementáltam!");
+      }
     }
 
-    public Iterable<FinancialItemCategory> getFinancialItemCategories() {
-        return financeItemCategoryRepository.findAll();
+    toUpdate.setSourceAccount(
+      ControllerUtility.getOrNotFound(accountRepository.findById(financeItem.getSourceAccount().getId()),
+        "Target account not found!"));
+
+    toUpdate.setCategory(
+      ControllerUtility.getOrNotFound(
+        financeItemCategoryRepository.findById(financeItem.getCategory().getId()), "Transaction category not found!"));
+
+    toUpdate.setNote(financeItem.getNote());
+
+    // ha a dátum módosult, helyezzük át
+    // ekkor az összeget is kezeljük
+    if (!financeItem.getTransactionDate().equals(toUpdate.getTransactionDate())) {
+      toUpdate.setTransactionDate(financeItem.getTransactionDate());
+      toUpdate.setAmount(financeItem.getAmount());
+      toUpdate.setOrderNumber(Integer.MAX_VALUE);
+      //transactionHandler.setBalanceAndOrderByLastFinanceItem(toUpdate);
+      financeItemRepository.save(toUpdate);
+      transactionHandler.updateFinanceItemBalanceAnfOrderNumber();
+    } else if (financeItem.getAmount().compareTo(toUpdate.getAmount()) != 0) {
+      // ha csak az összeg, a következő elemeket számoljuk újra
+      toUpdate.setAmount(financeItem.getAmount());
+      financeItemRepository.save(toUpdate);
+      transactionHandler.updateFinanceItemBalanceAnfOrderNumber();
     }
 
-    public void updateFinancialItem(FinanceItem financeItem) {
-        FinanceItem toUpdate = ControllerUtility.getOrNotFound(
-                financeItemRepository.findById(financeItem.getId()),
-                "Transaction not found!");
+    //updateFinanceItems(toUpdate, toUpdate.getOrderNumber());
 
-        toUpdate.setTargetAccount(
-                ControllerUtility.getOrNotFound(accountRepository.findById(financeItem.getTargetAccount().getId()),
-                        "Target account not found!"));
+  }
 
-        toUpdate.setCategory(
-                ControllerUtility.getOrNotFound(
-                financeItemCategoryRepository.findById(financeItem.getCategory().getId()),"Transaction category not found!"));
+  public List<FinanceItem> moveBackFinancialItem(long financeItemId) {
+    FinanceItem financeItemFirst =
+      financeItemRepository.findById(financeItemId).orElseThrow(
+        () -> new BSEntityNotFoundException("Tarnzakció nem található! Id: " + financeItemId));
+    FinanceItem financeItemSecond =
+      financeItemRepository.getFinanceItemByOrderNumber(financeItemFirst.getOrderNumber() - 1).orElseThrow(
+        () -> new FinancialExceptions("Nem lehet a tranzakciót hátrasorolni, mivel nincs megelőző tranzakció!"));
 
-        toUpdate.setNote(financeItem.getNote());
+    transactionHandler.changeTransactionOrder(financeItemFirst, financeItemSecond);
+    financeItemRepository.saveAll(Arrays.asList(financeItemFirst, financeItemSecond));
+    return Arrays.asList(financeItemFirst, financeItemSecond);
+  }
 
-        // ha a dátum módosult, helyezzük át
-        // ekkor az összeget is kezeljük
-        if(!financeItem.getTransactionDate().equals(toUpdate.getTransactionDate())){
-            toUpdate.setTransactionDate(financeItem.getTransactionDate());
-            toUpdate.setAmount(financeItem.getAmount());
-            toUpdate.setOrderNumber(Integer.MAX_VALUE);
-            //transactionHandler.setBalanceAndOrderByLastFinanceItem(toUpdate);
-            financeItemRepository.save(toUpdate);
-            transactionHandler.updateFinanceItemBalanceAnfOrderNumber();
-        }else if(financeItem.getAmount().compareTo(toUpdate.getAmount()) != 0){
-            // ha csak az összeg, a következő elemeket számoljuk újra
-            toUpdate.setAmount(financeItem.getAmount());
-            financeItemRepository.save(toUpdate);
-            transactionHandler.updateFinanceItemBalanceAnfOrderNumber();
-        }
+  public List<FinanceItem> moveAheadFinancialItem(long financeItemId) {
+    FinanceItem financeItemSecond =
+      financeItemRepository.findById(financeItemId).orElseThrow(
+        () -> new BSEntityNotFoundException("Tarnzakció nem található! Id: " + financeItemId));
+    FinanceItem financeItemFirst =
+      financeItemRepository.getFinanceItemByOrderNumber(financeItemSecond.getOrderNumber() + 1).orElseThrow(
+        () -> new FinancialExceptions("Nem lehet a tranzakciót előresorolni, mivel nincs rákövetkező tranzakció!"));
 
-        //updateFinanceItems(toUpdate, toUpdate.getOrderNumber());
+    transactionHandler.changeTransactionOrder(financeItemFirst, financeItemSecond);
+    financeItemRepository.saveAll(Arrays.asList(financeItemFirst, financeItemSecond));
+    return Arrays.asList(financeItemFirst, financeItemSecond);
+  }
 
+  public FinancialItemCategory passivateFinancialItemCategory(FinancialItemCategory financialItemCategory) {
+    FinancialItemCategory fromStore = financeItemCategoryRepository.findById(financialItemCategory.getId())
+      .orElseThrow( () -> new BSEntityNotFoundException("Kategória nem található!"));
+    if(!fromStore.isAlive()){
+      throw new FinancialExceptions(fromStore.getName() + " már passzív!");
     }
+    fromStore.setAlive(false);
+    financeItemCategoryRepository.save(fromStore);
+    return fromStore;
+  }
 
-    public List<FinanceItem> moveBackFinancialItem(long financeItemId) {
-        FinanceItem financeItemFirst =
-            financeItemRepository.findById(financeItemId).orElseThrow(
-                () -> new BSEntityNotFoundException("Tarnzakció nem található! Id: " + financeItemId));
-        FinanceItem financeItemSecond =
-            financeItemRepository.getFinanceItemByOrderNumber(financeItemFirst.getOrderNumber() - 1).orElseThrow(
-                () -> new FinancialExceptions("Nem lehet a tranzakciót hátrasorolni, mivel nincs megelőző tranzakció!"));
-
-        transactionHandler.changeTransactionOrder(financeItemFirst, financeItemSecond);
-        financeItemRepository.saveAll(Arrays.asList(financeItemFirst, financeItemSecond));
-        return Arrays.asList(financeItemFirst, financeItemSecond);
+  public FinancialItemCategory activateFinancialItemCategory(FinancialItemCategory financialItemCategory) {
+    FinancialItemCategory fromStore = financeItemCategoryRepository.findById(financialItemCategory.getId())
+      .orElseThrow( () -> new BSEntityNotFoundException("Kategória nem található!"));
+    if(fromStore.isAlive()){
+      throw new FinancialExceptions(fromStore.getName() + " már aktív!");
     }
+    fromStore.setAlive(true);
+    financeItemCategoryRepository.save(fromStore);
+    return fromStore;
+  }
 
-    public List<FinanceItem> moveAheadFinancialItem(long financeItemId) {
-        FinanceItem financeItemSecond =
-                financeItemRepository.findById(financeItemId).orElseThrow(
-                        () -> new BSEntityNotFoundException("Tarnzakció nem található! Id: " + financeItemId));
-        FinanceItem financeItemFirst =
-                financeItemRepository.getFinanceItemByOrderNumber(financeItemSecond.getOrderNumber() + 1).orElseThrow(
-                        () -> new FinancialExceptions("Nem lehet a tranzakciót előresorolni, mivel nincs rákövetkező tranzakció!"));
-
-        transactionHandler.changeTransactionOrder(financeItemFirst, financeItemSecond);
-        financeItemRepository.saveAll(Arrays.asList(financeItemFirst, financeItemSecond));
-        return Arrays.asList(financeItemFirst, financeItemSecond);
-    }
+  public FinancialItemCategory updateFinancialItemCategory(FinancialItemCategory financialItemCategory) {
+    FinancialItemCategory fromStore = financeItemCategoryRepository.findById(financialItemCategory.getId())
+      .orElseThrow( () -> new BSEntityNotFoundException("Kategória nem található!"));
+    fromStore.setName(financialItemCategory.getName());
+    financeItemCategoryRepository.save(fromStore);
+    return fromStore;
+  }
 }

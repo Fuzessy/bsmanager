@@ -1,14 +1,11 @@
 package hu.fuz.bs.finance.model;
 
-import lombok.AllArgsConstructor;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
+import lombok.*;
 
 import javax.persistence.*;
 
-@Getter @Setter
-@AllArgsConstructor @NoArgsConstructor
+@Data @Builder
+@NoArgsConstructor @AllArgsConstructor
 
 @Entity
 public class FinancialItemCategory {
@@ -16,4 +13,8 @@ public class FinancialItemCategory {
     private Long id;
 
     @Column(nullable = false)  private String name;
+    // ez a Lombok builder miatt kell, hogy a default értéket ne írja felül
+    @Builder.Default
+    @Column(nullable = false)  private boolean alive = true;
+
 }

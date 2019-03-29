@@ -1,5 +1,7 @@
 import {Component, OnInit} from '@angular/core';
 import {AuthenticationService} from "./core/service/authentication.service";
+import {FuzAlertService} from "./fuz-components/fuz-alert/fuz-alert.service";
+import {ButtonOptions} from "./fuz-components/fuz-alert/button-optins";
 
 @Component({
   selector: 'app-root',
@@ -18,7 +20,7 @@ export class AppComponent implements OnInit{
       open : false,
       subMenuItems: [
         {label: 'Tétel rögzítése', link:'addNewFinanceItem'},
-        {label: 'Tételtípusok'},
+        {label: 'Tételtípusok', link:'financeItemCategories'},
         {label: 'Számlatörténet', link:'financeHistory'},
         {label: 'Terv'},
         {label: 'Ismétlődő költségek'},
@@ -57,6 +59,7 @@ export class AppComponent implements OnInit{
   }
 
   ngOnInit(){
+
   }
 
   authenticated(){
@@ -71,6 +74,7 @@ export class AppComponent implements OnInit{
   toggleMenu() {
     this.isMenuToggleOn = !this.isMenuToggleOn;
   }
+
 
   toggleMenuItem(id : number) : void{
     let item = this.menu.find(e => e.id === id);

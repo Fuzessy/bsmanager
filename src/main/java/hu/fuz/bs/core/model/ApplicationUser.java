@@ -1,5 +1,6 @@
 package hu.fuz.bs.core.model;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -14,6 +15,8 @@ public class ApplicationUser {
   private long id;
 
   @Column(length = 64) private String userName;
+
+  @JsonProperty(access = JsonProperty.Access.WRITE_ONLY)
   @Column(length = 128) private String password;
   @Column(length = 128) private String fullName;
   @Column(length = 128) private String nickName;

@@ -67,9 +67,9 @@
                   <span class="input-group-text" id="account">Forrásszámla</span>
                 </div>
                 <select class="form-control"
-                        name="account"
-                        placeholder="Számla" aria-label="Számla" aria-describedby="account"
-                        [(ngModel)]="selectedAccount"
+                        name="sourceAccount"
+                        placeholder="Számla" aria-label="Számla" aria-describedby="sourceAccount"
+                        [(ngModel)]="selectedSourceAccount"
                         required>
                   <option *ngFor="let a of accounts" [ngValue]="a">
                     {{a.name}}
@@ -122,7 +122,8 @@
 
           <div>
             <button type="submit" class="btn btn-primary"
-                    [disabled]="!form.valid">
+                    [disabled]="!form.valid"
+                    *ngIf="mode === 'insert' || mode === 'update'">
               <span *ngIf="mode === 'insert'">Rögzítés</span>
               <span *ngIf="mode === 'update'">Módosítás</span>
             </button>
@@ -131,12 +132,5 @@
       </div>
     </div>
 
-
-    <div *ngIf="operationFinished" class="alert alert-success" role="alert">
-      <h4 class="alert-heading">Rögzítés sikeres!</h4>
-      <p>
-        <button  class="btn btn-success" (click)="initData()">Új rögzítés!</button>
-      </p>
-    </div>
-
   </div>
+

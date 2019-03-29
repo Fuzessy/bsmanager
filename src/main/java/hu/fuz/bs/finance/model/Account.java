@@ -20,4 +20,8 @@ public class Account {
 
     @Column(nullable = false) private int orderNumber;
 
+  public static boolean equalsItems(Account a, Account b){
+    return (a == null && b == null)
+      || (a != null && b != null && a.getId().equals(b.getId()));
+  }
 }

@@ -25,9 +25,29 @@ export class FinancialService {
       , financialItem).toPromise();
   }
 
-  public getFinancialItemCategories() : Observable<FinancialItemCategory[]>{
+  public getFinancialItemCategories(alive : boolean) : Observable<FinancialItemCategory[]>{
+    let params : HttpParams = new HttpParams();
+    if(alive){
+      params.append("alive", "true");
+    }
     return this.httpClient.get<FinancialItemCategory[]>(
-      this.path.URL("/finance/finance-item-categories"));
+      this.path.URL("/finance/finance-item-categories"),
+      {params:params});
+  }
+
+  public passivateFinancialItemCategory(item: FinancialItemCategory) : Promise<FinancialItemCategory> {
+    return this.httpClient.put<FinancialItemCategory>(
+      this.path.URL("/finance/finance-item-categories/operations/passivate"),item).toPromise()
+  }
+
+  public activateFinancialItemCategory(item: FinancialItemCategory) : Promise<FinancialItemCategory> {
+    return this.httpClient.put<FinancialItemCategory>(
+      this.path.URL("/finance/finance-item-categories/operations/activate"),item).toPromise()
+  }
+
+  public updateFinancialItemCategory(item: FinancialItemCategory) : Promise<FinancialItemCategory> {
+    return this.httpClient.put<FinancialItemCategory>(
+      this.path.URL("/finance/finance-item-categories"),item).toPromise()
   }
 
   public getUserAccounts() : Observable<FinAccount[]>{
@@ -64,4 +84,6 @@ export class FinancialService {
       this.path.URL("/finance/moveahead"),
       financeItem.id).toPromise();
   }
+
+
 }

@@ -3,6 +3,7 @@ import {FinancialItemCategory} from "../model/financial-item-category";
 import {FinancialService} from "../services/financial.service";
 import {FinancialItem} from "../model/financial-item";
 import {FinAccount} from "../model/fin-account";
+import {FuzAlertService} from "../../fuz-components/fuz-alert/fuz-alert.service";
 
 @Component({
   selector: 'app-add-item',
@@ -11,9 +12,12 @@ import {FinAccount} from "../model/fin-account";
 })
 export class AddItemComponent implements AfterViewInit {
 
+  /**
+   * insert, update
+   * @type {string}
+   */
   @Input('mode')
   mode : string = 'insert';
-  private viewInited: boolean = false;
   private accountIsLloaded: boolean = false;
   private categoriesLoaded: boolean = false;
 
@@ -25,7 +29,11 @@ export class AddItemComponent implements AfterViewInit {
       this.amount = Math.abs(item.amount);
 
       this.checkIfDataLoaded().then( () =>{
-        this.selectedAccount = this.accounts.find(a => a.id === item.targetAccount.id);
+        this.selectedSourceAccount = this.accounts.find(a => a.id === item.sourceAccount.id);
+        this.selectedTargetAccount = this.accounts.find(a => a.id === item.targetAccount.id);
+        if(this.selectedTargetAccount){
+          this.isTransfer = true;
+        }
         this.selectedFinItemCategorie = this.finItemCategories.find(c => c.id == item.category.id);
       });
 
@@ -55,7 +63,8 @@ export class AddItemComponent implements AfterViewInit {
   finItemCategories : FinancialItemCategory[];
   selectedFinItemCategorie : FinancialItemCategory;
   accounts : FinAccount[];
-  selectedAccount : FinAccount;
+  selectedSourceAccount : FinAccount;
+  selectedTargetAccount : FinAccount;
   creditOrDebit = [
     {multiplier:-1, name:"terhelés"},
     {multiplier:1, name:"jóváírás"}];
@@ -67,13 +76,13 @@ export class AddItemComponent implements AfterViewInit {
   operationFinished: boolean = false;
   isTransfer: boolean = false;
 
-  constructor(private financialService :FinancialService) {
-    this.financialService.getFinancialItemCategories().subscribe(
+  constructor(private financialService :FinancialService, private alertService : FuzAlertService) {
+    this.financialService.getFinancialItemCategories(true).subscribe(
       value => {
-        this.finItemCategories = value
+        this.finItemCategories = value;
         this.categoriesLoaded = true;
       },
-      err => console.error('Hiba történt: ' + err)
+      err => this.alertService.showHttpErrorMessage(err)
     );
 
     this.financialService.getUserAccounts().subscribe(
@@ -81,7 +90,7 @@ export class AddItemComponent implements AfterViewInit {
         this.accounts = value;
         this.accountIsLloaded = true;
       },
-      err => console.error('Hiba történt: ' + err)
+      err => this.alertService.showHttpErrorMessage(err)
     );
     this.transactionDateModel = new Date().toISOString().substr(0,10);
 
@@ -121,13 +130,14 @@ export class AddItemComponent implements AfterViewInit {
         this.operationFinished = true;
         this.onOperationFinished.emit();
       })
-      .catch( err =>{ console.log('Hiba történt: ' + err);})
+      .catch( err =>this.alertService.showHttpErrorMessage(err));
   }
 
   onUpdateFinancialItem(){
     this.itemForUD.amount = this.selectedCreditOrDebit.multiplier * this.amount;
     this.itemForUD.category = this.selectedFinItemCategorie;
-    this.itemForUD.targetAccount = this.selectedAccount;
+    this.itemForUD.sourceAccount = this.selectedSourceAccount;
+    this.itemForUD.targetAccount = this.determineTargetAccount();
     this.itemForUD.transactionDate = new Date(this.transactionDateModel);
 
     this.financialService.updateFinancialItem(this.itemForUD)
@@ -135,7 +145,7 @@ export class AddItemComponent implements AfterViewInit {
         this.operationFinished = true;
         this.onOperationFinished.emit();
       })
-      .catch( err =>{ console.log('Hiba történt: ' + err);})
+      .catch( err => this.alertService.showHttpErrorMessage(err));
   }
 
   transferToggle(event){
@@ -144,10 +154,9 @@ export class AddItemComponent implements AfterViewInit {
     }else{
       this.isTransfer = false;
     }
-
   }
 
-  private createFinanceItemFromFields() {
+  private createFinanceItemFromFields() : FinancialItem {
     return {
       id : null,
       recordUser : null,
@@ -155,7 +164,8 @@ export class AddItemComponent implements AfterViewInit {
 
       amount : this.selectedCreditOrDebit.multiplier * this.amount,
       category : this.selectedFinItemCategorie,
-      targetAccount : this.selectedAccount,
+      sourceAccount : this.selectedSourceAccount,
+      targetAccount : this.determineTargetAccount(),
       transactionDate : new Date(this.transactionDateModel),
       note : this.note,
       orderNumber : null,
@@ -163,9 +173,15 @@ export class AddItemComponent implements AfterViewInit {
     };
   }
 
+  private determineTargetAccount() {
+    return !this.isTransfer ? null : this.selectedTargetAccount;
+  }
+
   initData(){
     this.amount = null;
-    this.selectedAccount = null;
+    this.selectedSourceAccount = null;
+    this.isTransfer = false;
+    this.selectedTargetAccount = null;
     this.selectedFinItemCategorie = null;
     this.selectedCreditOrDebit = null;
     this.operationFinished = false;

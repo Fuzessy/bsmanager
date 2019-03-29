@@ -7,7 +7,7 @@
       <div style="text-align:center; color:white; font-family: Georgia; font-size: 20px;">BS</div>
     </div>
     <div style="align-items: right">
-                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                  <mat-icon matTooltip="Info about the action" class="menutoggle"  (click)="logout()">exit_to_app</mat-icon>
+      <mat-icon title="Kilépés" class="menutoggle"  (click)="logout()">exit_to_app</mat-icon>
     </div>
   </div>
 </div>
@@ -22,7 +22,7 @@
           <mat-icon class="arrow" [ngClass]="menuItem.open === true ? 'arrowOpen' : 'arrowClose'">arrow_drop_down</mat-icon>
         </div>
         <div *ngFor="let submenu of menuItem.subMenuItems" [ngClass]="menuItem.open === true ? 'subMenuOpen' : 'subMenuClose'">
-          <div class="menuItem subMenuItem" routerLink="/{{submenu.link}}">
+          <div class="menuItem subMenuItem" routerLink="/{{submenu.link}}" skipLocationChange>
             {{submenu.label}}
           </div>
         </div>

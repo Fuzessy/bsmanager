@@ -1,17 +1,19 @@
 import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FuzSelectComponent } from './fuz-select/fuz-select.component';
-import {MatIconModule} from "@angular/material";
 import {FuzCommonModule} from "../fuz-common/fuz-common.module";
 import { FuzNumberComponent } from './fuz-number/fuz-number.component';
+import { FuzAlertComponent } from './fuz-alert/fuz-alert.component';
+import {MaterialModule} from "../material.module";
 
 @NgModule({
   imports: [
     CommonModule,
-    MatIconModule,
-    FuzCommonModule
+    FuzCommonModule,
+    MaterialModule
   ],
-  declarations: [FuzSelectComponent, FuzNumberComponent],
-  exports: [FuzSelectComponent, FuzNumberComponent]
+  declarations: [FuzSelectComponent, FuzNumberComponent, FuzAlertComponent],
+  entryComponents: [FuzAlertComponent],
+  exports: [FuzSelectComponent, FuzNumberComponent, FuzAlertComponent]
 })
 export class FuzComponentsModule { }

@@ -72,7 +72,7 @@
         <tr *ngFor="let i of model">
           <th>{{i.orderNumber}}</th>
           <td>{{i.transactionDate | date:'yyyy.MM.dd.' }}</td>
-          <td>{{i.targetAccount.name}}</td>
+          <td>{{i.sourceAccount.name}} <span *ngIf="i.targetAccount"> &#8594; {{i.targetAccount.name}}</span></td>
           <td>{{i.amount}}</td>
           <td>{{i.balance}}</td>
           <td>{{i.note}}</td>

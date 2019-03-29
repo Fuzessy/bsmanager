@@ -2,6 +2,7 @@ package hu.fuz.bs.finance.controller;
 
 import hu.fuz.bs.finance.dao.financeitem.FinanceItemRepository;
 import hu.fuz.bs.finance.exceptions.FinancialExceptions;
+import hu.fuz.bs.finance.model.Account;
 import hu.fuz.bs.finance.model.FinanceItem;
 import hu.fuz.bs.finance.model.FinanceItem_;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -9,6 +10,7 @@ import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Component;
 
 import java.math.BigDecimal;
+import java.util.Date;
 import java.util.Optional;
 
 @Component
@@ -64,4 +66,27 @@ public class TransactionHandler {
         second.setOrderNumber(second.getOrderNumber() + 1);
         second.setBalance(financeItemBalance);
     }
+
+  void createFinanceItemForTargetAccount(FinanceItem forSourceAccount) {
+    FinanceItem forTargetAccount = forSourceAccount.clone();
+
+    Account sourceAccount = forSourceAccount.getTargetAccount();
+    Account targetAccount = forSourceAccount.getSourceAccount();
+
+    forTargetAccount.setAmount(forSourceAccount.getAmount().negate());
+    forTargetAccount.setSourceAccount(sourceAccount);
+    forTargetAccount.setTargetAccount(targetAccount);
+
+    createSingleFinanceItem(forTargetAccount);
+  }
+
+  void createSingleFinanceItem(FinanceItem financeItem) {
+    financeItem.setId(null);
+    financeItem.setRecordTimestamp(new Date());
+    financeItem.setBalance(BigDecimal.ZERO);
+
+    setBalanceAndOrderByLastFinanceItem(financeItem);
+    financeItemRepository.save(financeItem);
+    updateFinanceItemBalanceAnfOrderNumber();
+  }
 }

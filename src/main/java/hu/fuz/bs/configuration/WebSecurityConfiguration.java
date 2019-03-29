@@ -31,8 +31,12 @@ public class WebSecurityConfiguration extends WebSecurityConfigurerAdapter {
   protected void configure(HttpSecurity http) throws Exception {
     http.csrf().disable().authorizeRequests()
       .antMatchers("/","/*.js","/*.ico").permitAll()
+      // h2 console miatt: http://localhost:8080/h2-console/
+      .antMatchers("/h2-console/**").permitAll()
       .anyRequest().authenticated()
       .and()
+      // h2 console miatt: http://localhost:8080/h2-console/
+      .headers().frameOptions().disable().and()
       .addFilter(new JWTAuthenticationFilter(authenticationManager()))
       .addFilter(new JWTAuthorizationFilter(authenticationManager()))
     .sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS);

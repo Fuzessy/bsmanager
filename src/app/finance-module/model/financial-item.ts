@@ -4,6 +4,7 @@ import {FinAccount} from "./fin-account";
 export interface FinancialItem {
   id : number,
   category : FinancialItemCategory,
+  sourceAccount : FinAccount,
   targetAccount : FinAccount,
   amount : number,
   recordTimestamp : Date,

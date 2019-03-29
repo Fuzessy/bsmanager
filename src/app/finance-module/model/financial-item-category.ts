@@ -1,4 +1,5 @@
 export interface FinancialItemCategory {
   id : number,
-  name : string
+  name : string,
+  alive: boolean
 }

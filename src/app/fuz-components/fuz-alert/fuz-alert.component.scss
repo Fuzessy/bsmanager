@@ -1,0 +1,64 @@
+.error_dialog{
+  mat-dialog-container{
+    background-image: linear-gradient(to bottom, #e6401a 50px, white 100px , white 100%);
+    .mat-dialog-title{
+      color:white;
+    }
+    mat-dialog-content{
+      color:#23160b;
+
+      .fuz-alert-detail{
+        font-size: smaller;
+      }
+    }
+    mat-dialog-actions{
+      button:focus{
+        outline-color: #290000 !important;
+      };
+    }
+  }
+}
+
+.success_dialog{
+  mat-dialog-container{
+    background-image: linear-gradient(to bottom, #bfef88 50px, #f1fff1 100px , #f1fff1 97%, lightgreen 100%);
+    .mat-dialog-title{
+      color:#2e6f00;
+      font-weight: bold;
+    }
+    mat-dialog-content{
+      color:#23160b;
+
+      .fuz-alert-detail{
+        font-size: smaller;
+      }
+    }
+    mat-dialog-actions{
+      button:focus{
+        outline-color: #290000 !important;
+      };
+    }
+  }
+}
+
+.warning_dialog{
+  mat-dialog-container{
+    background-image: linear-gradient(to bottom, #ffb01f 50px, #f9f0d5 100px, #f9f0d5 97%, #dc7100 100%);
+    .mat-dialog-title{
+      color:#7d2d2d;
+      font-weight: bold;
+    }
+    mat-dialog-content{
+      color:#23160b;
+
+      .fuz-alert-detail{
+        font-size: smaller;
+      }
+    }
+    mat-dialog-actions{
+      button:focus{
+        outline-color: #290000 !important;
+      };
+    }
+  }
+}

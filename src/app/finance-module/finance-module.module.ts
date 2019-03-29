@@ -5,6 +5,8 @@ import {FuzComponentsModule} from "../fuz-components/fuz-components.module";
 import {FormsModule} from "@angular/forms";
 import { FinanceHistoryComponent } from './finance-history/finance-history.component';
 import {MatIconModule} from "@angular/material";
+import { FinanceItemCategoriesComponent } from './finance-item-categories/finance-item-categories.component';
+import { FinanceItemCategoryDetailsComponent } from './finance-item-category-details/finance-item-category-details.component';
 
 @NgModule({
   imports: [
@@ -13,6 +15,6 @@ import {MatIconModule} from "@angular/material";
     ,FuzComponentsModule
     ,MatIconModule
   ],
-  declarations: [AddItemComponent, FinanceHistoryComponent]
+  declarations: [AddItemComponent, FinanceHistoryComponent, FinanceItemCategoriesComponent, FinanceItemCategoryDetailsComponent]
 })
 export class FinanceModuleModule { }
