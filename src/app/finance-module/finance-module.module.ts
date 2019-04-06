@@ -15,6 +15,7 @@ import { FinanceItemCategoryDetailsComponent } from './finance-item-category-det
     ,FuzComponentsModule
     ,MatIconModule
   ],
-  declarations: [AddItemComponent, FinanceHistoryComponent, FinanceItemCategoriesComponent, FinanceItemCategoryDetailsComponent]
+  declarations: [AddItemComponent, FinanceHistoryComponent, FinanceItemCategoriesComponent, FinanceItemCategoryDetailsComponent],
+  entryComponents: [FinanceItemCategoryDetailsComponent]
 })
 export class FinanceModuleModule { }

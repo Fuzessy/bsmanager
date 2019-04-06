@@ -21,16 +21,18 @@ export class AddItemComponent implements AfterViewInit {
   private accountIsLloaded: boolean = false;
   private categoriesLoaded: boolean = false;
 
+  private inputFinanceItem : FinancialItem;
   @Input('financeItem')
   set financeItem( item : FinancialItem){
     if(item){
-      this.itemForUD = item;
+      this.inputFinanceItem = item;
       this.selectedCreditOrDebit = item.amount > 0 ? this.creditOrDebit[1] : this.creditOrDebit[0];
       this.amount = Math.abs(item.amount);
 
       this.checkIfDataLoaded().then( () =>{
         this.selectedSourceAccount = this.accounts.find(a => a.id === item.sourceAccount.id);
-        this.selectedTargetAccount = this.accounts.find(a => a.id === item.targetAccount.id);
+        this.selectedTargetAccount =
+          item.targetAccount ? this.accounts.find(a => a.id === item.targetAccount.id) : null;
         if(this.selectedTargetAccount){
           this.isTransfer = true;
         }
@@ -47,7 +49,7 @@ export class AddItemComponent implements AfterViewInit {
   }
 
   get financeItem() : FinancialItem{
-    return this.createFinanceItemFromFields();
+    return this.inputFinanceItem;
   }
 
   /**
@@ -59,7 +61,6 @@ export class AddItemComponent implements AfterViewInit {
   @ViewChild('transactionAmountField')
   transactionAmountField : ElementRef;
 
-  itemForUD : FinancialItem; // id for update or delete
   finItemCategories : FinancialItemCategory[];
   selectedFinItemCategorie : FinancialItemCategory;
   accounts : FinAccount[];
@@ -134,15 +135,25 @@ export class AddItemComponent implements AfterViewInit {
   }
 
   onUpdateFinancialItem(){
-    this.itemForUD.amount = this.selectedCreditOrDebit.multiplier * this.amount;
-    this.itemForUD.category = this.selectedFinItemCategorie;
-    this.itemForUD.sourceAccount = this.selectedSourceAccount;
-    this.itemForUD.targetAccount = this.determineTargetAccount();
-    this.itemForUD.transactionDate = new Date(this.transactionDateModel);
+    var itemForUD : FinancialItem = {
+      amount : this.selectedCreditOrDebit.multiplier * this.amount,
+      category : this.selectedFinItemCategorie,
+      sourceAccount : this.selectedSourceAccount,
+      targetAccount : this.determineTargetAccount(),
+      transactionDate : new Date(this.transactionDateModel),
+      orderNumber : this.inputFinanceItem.orderNumber,
+      id : this.inputFinanceItem.id,
+      note : this.note,
+      // nem relevánsak
+      recordUser : null,
+      recordTimestamp : null,
+      balance: null
+    };
 
-    this.financialService.updateFinancialItem(this.itemForUD)
-      .then(_ => {
+    this.financialService.updateFinancialItem(itemForUD)
+      .then(data => {
         this.operationFinished = true;
+        this.inputFinanceItem = data;
         this.onOperationFinished.emit();
       })
       .catch( err => this.alertService.showHttpErrorMessage(err));

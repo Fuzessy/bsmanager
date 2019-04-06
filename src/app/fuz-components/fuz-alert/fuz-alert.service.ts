@@ -42,9 +42,14 @@ export class FuzAlertService {
   }
 
   public showHttpErrorMessage( error: any) : Observable<any>{
+    console.log(JSON.stringify(error));
+    var errormassage = error.error && error.error.message ? error.error.message : "Hiba történt a művelet végrehajtása során!";
+    if(error.status == 403){
+      errormassage = 'Lejárt a biztonsági időkorlát! Kérlek jelentkezz be újra!';
+    }
     var fuzAlertData : FuzAlertData = {
       title: "Figyelem!",
-      message: error.error && error.error.message ? error.error.message : "Hiba történt a művelet végrehajtása során!",
+      message: errormassage,
       details: null,
       buttonOption : ButtonOptions.OK_OPTION,
       fuzAlertCloseEvents : { }

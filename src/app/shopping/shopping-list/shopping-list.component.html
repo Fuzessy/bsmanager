@@ -1,0 +1,144 @@
+<div class="menu">
+  <div style="width:100%; padding:5px; text-align:center">
+    Bevásárlás
+  </div>
+  <div class="container w-100">
+    <div style="width: 100%;" class="row justify-content-center">
+
+      <mat-tab-group class="mat-elevation-z12 col-12">
+        <mat-tab label="Lista" class="row justify-content-center col-12">
+
+          <ng-template matTabLabel>
+            <span [matBadge]="shoppingListItems && shoppingListItems.length" matBadgeOverlap="false">Lista</span>
+          </ng-template>
+
+          <div class="row justify-content-center container col-12">
+            <table mat-table [dataSource]="dataSource" class="col-lg-10 col-sm-12 col-xs-12">
+
+              <!-- Megvettem -->
+              <ng-container matColumnDef="check">
+                <th mat-header-cell *matHeaderCellDef> Megvettem </th>
+                <td mat-cell *matCellDef="let element">
+                  <mat-checkbox></mat-checkbox>
+                </td>
+              </ng-container>
+
+              <!-- name -->
+              <ng-container matColumnDef="name">
+                <th mat-header-cell *matHeaderCellDef> Név </th>
+                <td mat-cell *matCellDef="let element"> {{element.name}} </td>
+              </ng-container>
+
+              <!-- category -->
+              <ng-container matColumnDef="category">
+                <th mat-header-cell *matHeaderCellDef> Kategória </th>
+                <td mat-cell *matCellDef="let element"> {{element.category && element.category.name}} </td>
+              </ng-container>
+
+              <!-- quantity -->
+              <ng-container matColumnDef="quantity">
+                <th mat-header-cell *matHeaderCellDef> Mennyiség </th>
+                <td mat-cell *matCellDef="let element"> {{element.quantity}} </td>
+              </ng-container>
+
+              <!-- note -->
+              <ng-container matColumnDef="note">
+                <th mat-header-cell *matHeaderCellDef> Megjegyzés </th>
+                <td mat-cell *matCellDef="let element"> {{element.note}} </td>
+              </ng-container>
+
+              <!-- target name -->
+              <ng-container matColumnDef="target">
+                <th mat-header-cell *matHeaderCellDef> Kinek? </th>
+                <td mat-cell *matCellDef="let element"> {{element.target && element.target.name}} </td>
+              </ng-container>
+
+              <!-- priority -->
+              <ng-container matColumnDef="priority">
+                <th mat-header-cell *matHeaderCellDef> Prioritás </th>
+                <td mat-cell *matCellDef="let element"> {{element.priority}} </td>
+              </ng-container>
+
+              <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+              <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
+
+              <!-- group -->
+              <!-- Group header -->
+              <ng-container matColumnDef="groupHeader">
+                <td colspan="999" mat-cell *matCellDef="let groupBy"><strong>{{groupBy}}</strong></td>
+              </ng-container>
+
+              <tr mat-row *matRowDef="let row; columns: ['groupHeader']; when: isGroup"> </tr>
+
+            </table>
+          </div>
+        </mat-tab>
+
+        <mat-tab label="Már megvásárolt">
+          <div class="row justify-content-center container col-12">
+            <table mat-table [dataSource]="dataSource" class="col-lg-10 col-sm-12 col-xs-12">
+
+              <!-- Megvettem -->
+              <ng-container matColumnDef="check">
+                <th mat-header-cell *matHeaderCellDef> Megvettem </th>
+                <td mat-cell *matCellDef="let element">
+                  <mat-checkbox></mat-checkbox>
+                </td>
+              </ng-container>
+
+              <!-- name -->
+              <ng-container matColumnDef="name">
+                <th mat-header-cell *matHeaderCellDef> Név </th>
+                <td mat-cell *matCellDef="let element"> {{element.name}} </td>
+              </ng-container>
+
+              <!-- category -->
+              <ng-container matColumnDef="category">
+                <th mat-header-cell *matHeaderCellDef> Kategória </th>
+                <td mat-cell *matCellDef="let element"> {{element.category && element.category.name}} </td>
+              </ng-container>
+
+              <!-- quantity -->
+              <ng-container matColumnDef="quantity">
+                <th mat-header-cell *matHeaderCellDef> Mennyiség </th>
+                <td mat-cell *matCellDef="let element"> {{element.quantity}} </td>
+              </ng-container>
+
+              <!-- note -->
+              <ng-container matColumnDef="note">
+                <th mat-header-cell *matHeaderCellDef> Megjegyzés </th>
+                <td mat-cell *matCellDef="let element"> {{element.note}} </td>
+              </ng-container>
+
+              <!-- target name -->
+              <ng-container matColumnDef="target">
+                <th mat-header-cell *matHeaderCellDef> Kinek? </th>
+                <td mat-cell *matCellDef="let element"> {{element.target && element.target.name}} </td>
+              </ng-container>
+
+              <!-- priority -->
+              <ng-container matColumnDef="priority">
+                <th mat-header-cell *matHeaderCellDef> Prioritás </th>
+                <td mat-cell *matCellDef="let element"> {{element.priority}} </td>
+              </ng-container>
+
+              <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+              <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
+
+              <!-- group -->
+              <!-- Group header -->
+              <ng-container matColumnDef="groupHeader">
+                <td colspan="999" mat-cell *matCellDef="let groupBy"><strong>{{groupBy}}</strong></td>
+              </ng-container>
+
+              <tr mat-row *matRowDef="let row; columns: ['groupHeader']; when: isGroup"> </tr>
+
+            </table>
+          </div>
+        </mat-tab>
+      </mat-tab-group>
+
+    </div>
+    {{data2 | json}}
+  </div>
+</div>

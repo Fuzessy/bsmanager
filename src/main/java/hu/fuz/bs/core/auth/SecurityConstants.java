@@ -8,7 +8,7 @@ import static com.auth0.jwt.algorithms.Algorithm.HMAC512;
 public class SecurityConstants {
   public static final String TOKEN_PREFIX = "Bearer ";
   public static final String TOKEN_HEADER = "Authorization";
-  public static final long EXPIRATION_TIME = 60 * 60 * 1000; // 1h
+  public static final long EXPIRATION_TIME = 24 * 60 * 60 * 1000; // 24h
   public static final String SECRET = "very_secret_security_key"
       .replaceAll("e","alma")
       .replaceAll("y","barack");

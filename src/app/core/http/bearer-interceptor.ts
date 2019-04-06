@@ -27,7 +27,6 @@ export class BearerInterceptor implements HttpInterceptor {
       return next.handle(xhr).pipe(
         catchError((error: HttpErrorResponse) => {
           if(error.status == 403){
-            console.log("403 kód, pl lejárt a token?");
             this.authenticationService.logout();
           }
           return throwError(error)

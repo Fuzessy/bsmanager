@@ -6,7 +6,7 @@ export class Path {
 
   constructor() { }
 
-  private SERVER = "http:\\\\localhost:8080";
+  private SERVER = '.';//"http:\\\\localhost:8080";
 
   public URL(urlPart: string) {
     return this.SERVER + urlPart;

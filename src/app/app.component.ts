@@ -1,7 +1,5 @@
 import {Component, OnInit} from '@angular/core';
 import {AuthenticationService} from "./core/service/authentication.service";
-import {FuzAlertService} from "./fuz-components/fuz-alert/fuz-alert.service";
-import {ButtonOptions} from "./fuz-components/fuz-alert/button-optins";
 
 @Component({
   selector: 'app-root',
@@ -33,8 +31,8 @@ export class AppComponent implements OnInit{
       label: 'Bevásárlólista',
       open : false,
       subMenuItems:[
-        {label: 'Tétel rögzítése'},
-        {label: 'Bevásárlás'},
+        {label: 'Új termék hozzáadása', link:'shoppingListItem'},
+        {label: 'Bevásárlás', link:'shoppingList'},
         {label: 'Termékkatalógus'}
       ]
     },

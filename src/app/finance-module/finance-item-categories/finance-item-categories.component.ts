@@ -1,6 +1,8 @@
 import { Component, OnInit } from '@angular/core';
 import {FinancialService} from "../services/financial.service";
 import {FinancialItemCategory} from "../model/financial-item-category";
+import {MatDialog, MatDialogModule} from "@angular/material";
+import {FinanceItemCategoryDetailsComponent} from "../finance-item-category-details/finance-item-category-details.component";
 
 @Component({
   selector: 'app-finance-item-categories',
@@ -10,7 +12,8 @@ import {FinancialItemCategory} from "../model/financial-item-category";
 export class FinanceItemCategoriesComponent implements OnInit {
   private financeItemCategories: FinancialItemCategory[];
 
-  constructor(private financialService : FinancialService) { }
+  constructor(private financialService : FinancialService,
+              private matDialog : MatDialog) { }
 
   ngOnInit() {
     this.financialService.getFinancialItemCategories(false)
@@ -30,7 +33,12 @@ export class FinanceItemCategoriesComponent implements OnInit {
   }
 
   rename(item : FinancialItemCategory){
-
+    let dialogRef = this.matDialog.open(FinanceItemCategoryDetailsComponent, {
+      data: item
+    });
+    dialogRef.afterClosed().subscribe(
+      data => {if(data) this.changeElementInArray(data)}
+    )
   }
 
   private changeElementInArray(item: FinancialItemCategory) {

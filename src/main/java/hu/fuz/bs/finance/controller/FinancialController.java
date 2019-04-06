@@ -1,6 +1,7 @@
 package hu.fuz.bs.finance.controller;
 
 import hu.fuz.bs.common.controller.ControllerUtility;
+import hu.fuz.bs.common.dao.specification.SpecificationBuilder;
 import hu.fuz.bs.common.exceptions.BSEntityNotFoundException;
 import hu.fuz.bs.finance.dao.AccountRepository;
 import hu.fuz.bs.finance.dao.FinanceItemCategoryRepository;
@@ -17,7 +18,6 @@ import org.springframework.stereotype.Controller;
 import org.springframework.transaction.annotation.Isolation;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.util.*;
 
@@ -42,23 +42,11 @@ public class FinancialController {
 
   public Iterable<FinanceItem> getFinancialItems(Optional<LocalDate> transactionDateFrom,
                                                  Optional<LocalDate> transactionDateTo, int accountId) {
-    List<Specification<FinanceItem>> filters = new ArrayList<>();
-
-    filters.add(accountIdIs(accountId));
-    transactionDateTo.ifPresent(localDate -> filters.add(lessThanEq(localDate)));
-    transactionDateFrom.ifPresent(localDate -> filters.add(greaterThanEq(localDate)));
-
-    Specification<FinanceItem> spec = null;
-    for (Specification<FinanceItem> s : filters) {
-      if (spec == null) {
-        spec = s;
-      } else {
-        spec = spec.and(s);
-      }
-    }
-
     return financeItemRepository.findAll(
-      spec,
+      SpecificationBuilder
+        .where(accountIdIs(accountId))
+        .and(transactionDateTo.isPresent(),() -> lessThanEq(transactionDateTo.get()))
+        .and(transactionDateFrom.isPresent(),() -> greaterThanEq(transactionDateFrom.get())).build(),
       Sort.by(Sort.Order.desc(FinanceItem_.orderNumber.getName())));
   }
 
