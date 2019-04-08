@@ -1,7 +1,6 @@
 package hu.fuz.bs.shopping.service;
 
 import hu.fuz.bs.core.dao.ApplicationUserRepository;
-import hu.fuz.bs.core.model.ApplicationUser;
 import hu.fuz.bs.shopping.controller.ShoppingController;
 import hu.fuz.bs.shopping.model.*;
 import org.springframework.beans.factory.annotation.Autowired;

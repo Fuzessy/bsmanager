@@ -41,4 +41,11 @@ export class ShoppingService {
       this.path.URL("/shopping/shopping-list-item")
     ).toPromise();
   }
+
+  updateShoppingListItem(shoppingListItem: ShoppingListItem) : Promise<ShoppingListItem>{
+    return this.httpClient.put<ShoppingListItem>(
+      this.path.URL("/shopping/shopping-list-item"),
+      shoppingListItem
+    ).toPromise();
+  }
 }

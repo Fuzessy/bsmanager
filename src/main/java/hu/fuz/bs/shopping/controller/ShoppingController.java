@@ -20,6 +20,7 @@ public class ShoppingController {
 
   public ShoppingListItem createShoppingListItem(ShoppingListItem shoppingListItem, ApplicationUser applicationUser) {
     shoppingListItem.setRecordUser(applicationUser);
+    shoppingListItem.setItemStatus(ItemStatus.CREATED);
     shoppingListItemRepository.save(shoppingListItem);
     return shoppingListItem;
   }

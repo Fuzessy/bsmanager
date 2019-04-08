@@ -5,6 +5,7 @@ import {ItemCategory} from "../model/item-category";
 import {ShoppingListItem} from "../model/shopping-list-item";
 import {ApplicationUser} from "../../core/model/application-user";
 import {ItemTarget} from "../model/item-target";
+import {timer} from "rxjs/internal/observable/timer";
 
 @Component({
   selector: 'app-shopping-list-item',
@@ -24,7 +25,7 @@ export class ShoppingListItemComponent implements OnInit, AfterViewInit {
 
   ngAfterViewInit(){
     // angular esetén first is van..
-    this.inputItemName.first.nativeElement.focus();
+    setTimeout(() =>  this.inputItemName.first.nativeElement.focus(), 500);
   }
 
   ngOnInit() {

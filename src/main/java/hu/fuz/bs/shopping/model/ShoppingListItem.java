@@ -28,6 +28,7 @@ public class ShoppingListItem {
   private Priority priority;
 
   @Enumerated(value = EnumType.STRING)
+  @Column(nullable = false)
   private ItemStatus itemStatus;
 
   @ManyToOne(optional = false)

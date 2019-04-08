@@ -9,17 +9,17 @@
         <mat-tab label="Lista" class="row justify-content-center col-12">
 
           <ng-template matTabLabel>
-            <span [matBadge]="shoppingListItems && shoppingListItems.length" matBadgeOverlap="false">Lista</span>
+            <span [matBadge]="inProgressCount" matBadgeOverlap="false">Lista</span>
           </ng-template>
 
           <div class="row justify-content-center container col-12">
-            <table mat-table [dataSource]="dataSource" class="col-lg-10 col-sm-12 col-xs-12">
+            <table mat-table [dataSource]="dataSourceInProgress" class="col-lg-10 col-sm-12 col-xs-12">
 
               <!-- Megvettem -->
               <ng-container matColumnDef="check">
                 <th mat-header-cell *matHeaderCellDef> Megvettem </th>
                 <td mat-cell *matCellDef="let element">
-                  <mat-checkbox></mat-checkbox>
+                  <mat-checkbox (click)="buyFinished(element)"></mat-checkbox>
                 </td>
               </ng-container>
 
@@ -75,14 +75,19 @@
         </mat-tab>
 
         <mat-tab label="Már megvásárolt">
+
+          <ng-template matTabLabel>
+            <span [matBadge]="purchasedCount" matBadgeOverlap="false">Már megvásárolt</span>
+          </ng-template>
+
           <div class="row justify-content-center container col-12">
-            <table mat-table [dataSource]="dataSource" class="col-lg-10 col-sm-12 col-xs-12">
+            <table mat-table [dataSource]="dataSourcePurchased" class="col-lg-10 col-sm-12 col-xs-12">
 
               <!-- Megvettem -->
               <ng-container matColumnDef="check">
                 <th mat-header-cell *matHeaderCellDef> Megvettem </th>
                 <td mat-cell *matCellDef="let element">
-                  <mat-checkbox></mat-checkbox>
+                  <mat-checkbox (click)="buyCancelled(element)"></mat-checkbox>
                 </td>
               </ng-container>
 
@@ -139,6 +144,5 @@
       </mat-tab-group>
 
     </div>
-    {{data2 | json}}
   </div>
 </div>
