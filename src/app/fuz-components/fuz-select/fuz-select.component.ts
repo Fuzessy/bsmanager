@@ -30,7 +30,7 @@ export class FuzSelectComponent implements OnInit,ControlValueAccessor, Validato
 
   private origItems : any[];
 
-  private _selectedElement : any;
+  _selectedElement : any;
   set selectedElement(element: any){
     this._selectedElement = element;
     this.propagateChange(element);
@@ -39,10 +39,10 @@ export class FuzSelectComponent implements OnInit,ControlValueAccessor, Validato
     return this._selectedElement;
   }
 
-  private modelItems : {origItem,htmlValue,match}[] = [];
+  modelItems : {origItem,htmlValue,match}[] = [];
 
   @ViewChild("selectInput") inputField: ElementRef;
-  private itemContainerClass = "hideItemContainer";
+  itemContainerClass = "hideItemContainer";
   private hideTime : Date = new Date();
 
   constructor(private elRef: ElementRef) {

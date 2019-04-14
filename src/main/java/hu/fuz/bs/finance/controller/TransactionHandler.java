@@ -1,5 +1,6 @@
 package hu.fuz.bs.finance.controller;
 
+import hu.fuz.bs.finance.dao.financeitem.CustomerSpecifications;
 import hu.fuz.bs.finance.dao.financeitem.FinanceItemRepository;
 import hu.fuz.bs.finance.exceptions.FinancialExceptions;
 import hu.fuz.bs.finance.model.Account;
@@ -21,8 +22,9 @@ public class TransactionHandler {
 
 
     public void setBalanceAndOrderByLastFinanceItem(FinanceItem financeItem) {
-        int lastOrderNumberAtTrDate = financeItemRepository.getMaxOrderNumberBefore(financeItem.getTransactionDate());
-        Optional<FinanceItem> lastFinanceItem = financeItemRepository.getFinanceItemByOrderNumber(lastOrderNumberAtTrDate);
+        int lastOrderNumberAtTrDate = financeItemRepository.getMaxOrderNumberBefore(financeItem.getTransactionDate(), financeItem.getSourceAccount());
+        Optional<FinanceItem> lastFinanceItem = financeItemRepository
+          .getFinanceItemByOrderNumberAndSourceAccount(lastOrderNumberAtTrDate, financeItem.getSourceAccount());
 
         if(!lastFinanceItem.isPresent()){
             // legelső elem
@@ -32,9 +34,9 @@ public class TransactionHandler {
         }
     }
 
-    void updateFinanceItemBalanceAnfOrderNumber() {
+    void updateFinanceItemBalanceAnfOrderNumber(long accountId) {
         Iterable<FinanceItem> updateableFinanceItem =
-                financeItemRepository.findAll(null,
+                financeItemRepository.findAll(CustomerSpecifications.accountIdIs(accountId),
                         Sort.by(Sort.Order.asc(FinanceItem_.transactionDate.getName()),
                                 Sort.Order.asc(FinanceItem_.orderNumber.getName())));
 
@@ -87,6 +89,6 @@ public class TransactionHandler {
 
     setBalanceAndOrderByLastFinanceItem(financeItem);
     financeItemRepository.save(financeItem);
-    updateFinanceItemBalanceAnfOrderNumber();
+    updateFinanceItemBalanceAnfOrderNumber(financeItem.getSourceAccount().getId());
   }
 }

@@ -9,7 +9,7 @@ import javax.persistence.*;
 
 @Entity
 public class FinancialItemCategory {
-    @Id @GeneratedValue(strategy = GenerationType.AUTO)
+    @Id @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
     @Column(nullable = false)  private String name;

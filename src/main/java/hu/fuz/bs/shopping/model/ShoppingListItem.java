@@ -1,6 +1,7 @@
 package hu.fuz.bs.shopping.model;
 
 import hu.fuz.bs.core.model.ApplicationUser;
+import hu.fuz.bs.shopping.service.event.EventType;
 import hu.fuz.bs.shopping.model.exceptions.ShoppingException;
 import lombok.*;
 
@@ -14,7 +15,7 @@ import java.time.LocalDateTime;
 
 @Entity
 public class ShoppingListItem {
-  @Id @GeneratedValue(strategy = GenerationType.AUTO)
+  @Id @GeneratedValue(strategy = GenerationType.IDENTITY)
   private long id;
 
   private String name;
@@ -46,27 +47,32 @@ public class ShoppingListItem {
   @ManyToOne
   private ItemTarget target;
 
-  public void modifyStatusTo(ItemStatus itemStatus, ApplicationUser user) {
+  public EventType modifyStatusTo(ItemStatus itemStatus, ApplicationUser user) {
     if(this.itemStatus == ItemStatus.CREATED){
       if(itemStatus == ItemStatus.DELETED){
         setDeleteStatus(user);
+        return EventType.DELETE;
       }else if(itemStatus == ItemStatus.PURCHASED){
         setPurchasedStatus(user);
+        return EventType.PURCHASE;
       }
 
     }else if(this.itemStatus == ItemStatus.PURCHASED){
       if(itemStatus == ItemStatus.CREATED){
         setCreatedStatusAgain();
+        return EventType.PUT_BACK;
       }else if(itemStatus == ItemStatus.DELETED){
         throw new ShoppingException("Teljesült tétel nem törölhető!");
       }
     }else if(this.itemStatus == ItemStatus.DELETED){
       if(itemStatus == ItemStatus.CREATED){
         setCreatedStatusAgain();
+        return EventType.RESTORE;
       }else if(itemStatus == ItemStatus.PURCHASED){
         throw new ShoppingException("Törölt tétel nem lehet teljesült!");
       }
     }
+    return null;
   }
 
   private void setCreatedStatusAgain() {
@@ -86,4 +92,5 @@ public class ShoppingListItem {
     deleteTime = LocalDateTime.now();
     deleteUser = user;
   }
+
 }

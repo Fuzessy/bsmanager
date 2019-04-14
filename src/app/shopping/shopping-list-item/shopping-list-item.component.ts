@@ -13,10 +13,10 @@ import {timer} from "rxjs/internal/observable/timer";
   styleUrls: ['./shopping-list-item.component.scss']
 })
 export class ShoppingListItemComponent implements OnInit, AfterViewInit {
-  private categories: ItemCategory[];
-  private targets : ItemTarget[];
+  categories: ItemCategory[];
+  targets : ItemTarget[];
   private priority: any;
-  private shoppingListItem : ShoppingListItem;
+  shoppingListItem : ShoppingListItem;
 
   @ViewChildren('itemName') inputItemName;
 

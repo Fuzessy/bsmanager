@@ -18,6 +18,8 @@
 		<java.version>1.8</java.version>
 	</properties>
 
+
+
 	<dependencies>
 		<dependency>
 			<groupId>org.springframework.boot</groupId>
@@ -46,12 +48,6 @@
       <scope>provided</scope>
     </dependency>
 
-    <dependency>
-        <groupId>com.h2database</groupId>
-        <artifactId>h2</artifactId>
-        <scope>runtime</scope>
-    </dependency>
-
 		<dependency>
 			<groupId>org.springframework.boot</groupId>
 			<artifactId>spring-boot-starter-test</artifactId>
@@ -63,19 +59,31 @@
       <artifactId>spring-boot-devtools</artifactId>
       <optional>true</optional>
     </dependency>
+
     <dependency>
       <groupId>com.auth0</groupId>
       <artifactId>java-jwt</artifactId>
       <version>3.8.0</version>
     </dependency>
 
+    <dependency>
+      <groupId>org.springframework.boot</groupId>
+      <artifactId>spring-boot-starter-tomcat</artifactId>
+    </dependency>
+
   </dependencies>
 
+
+
 	<build>
+
 		<plugins>
 			<plugin>
 				<groupId>org.springframework.boot</groupId>
 				<artifactId>spring-boot-maven-plugin</artifactId>
+        <configuration>
+          <executable>true</executable>
+        </configuration>
 			</plugin>
 			<plugin>
 				<groupId>com.github.eirslett</groupId>
@@ -103,12 +111,76 @@
               <goal>npm</goal>
             </goals>
             <configuration>
-              <arguments>run-script build</arguments>
+              <arguments>${bs.npm.build}</arguments>
             </configuration>
           </execution>
 				</executions>
 			</plugin>
+
+      <plugin>
+        <groupId>org.flywaydb</groupId>
+        <artifactId>flyway-maven-plugin</artifactId>
+        <version>4.0.3</version>
+      </plugin>
+
 		</plugins>
 	</build>
+
+  <profiles>
+
+    <profile>
+      <id>dev</id>
+      <properties>
+        <activatedProperties>dev</activatedProperties>
+        <bs.npm.build>run-script build</bs.npm.build>
+      </properties>
+      <activation>
+        <activeByDefault>true</activeByDefault>
+      </activation>
+
+      <dependencies>
+        <dependency>
+          <groupId>com.h2database</groupId>
+          <artifactId>h2</artifactId>
+          <scope>runtime</scope>
+        </dependency>
+      </dependencies>
+
+    </profile>
+
+    <profile>
+      <id>release</id>
+      <properties>
+        <activatedProperties>release</activatedProperties>
+        <bs.npm.build>run-script buildprod</bs.npm.build>
+      </properties>
+
+      <dependencies>
+        <dependency>
+          <groupId>mysql</groupId>
+          <artifactId>mysql-connector-java</artifactId>
+          <version>8.0.15</version>
+        </dependency>
+      </dependencies>
+    </profile>
+
+
+    <profile>
+      <id>uat</id>
+      <properties>
+        <activatedProperties>uat</activatedProperties>
+        <bs.npm.build>run-script buildprod</bs.npm.build>
+      </properties>
+
+      <dependencies>
+        <dependency>
+          <groupId>mysql</groupId>
+          <artifactId>mysql-connector-java</artifactId>
+          <version>8.0.15</version>
+        </dependency>
+      </dependencies>
+    </profile>
+
+  </profiles>
 
 </project>

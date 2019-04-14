@@ -1,5 +1,7 @@
 import {Component, OnInit} from '@angular/core';
 import {AuthenticationService} from "./core/service/authentication.service";
+import {UserService} from "./core/service/user.service";
+import {ApplicationUser} from "./core/model/application-user";
 
 @Component({
   selector: 'app-root',
@@ -51,13 +53,16 @@ export class AppComponent implements OnInit{
       subMenuItems:[]
     }
   ];
+  private applicationUser: ApplicationUser;
 
-  constructor( private authenticationService : AuthenticationService){
+  constructor( private authenticationService : AuthenticationService,
+               private userService : UserService){
 
   }
 
   ngOnInit(){
-
+    this.userService.getApplicationUser()
+      .then( user => this.applicationUser = user);
   }
 
   authenticated(){

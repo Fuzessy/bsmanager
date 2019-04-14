@@ -83,9 +83,13 @@ public class FinancialController {
       }
     }
 
-    toUpdate.setSourceAccount(
-      ControllerUtility.getOrNotFound(accountRepository.findById(financeItem.getSourceAccount().getId()),
-        "Target account not found!"));
+    if(!toUpdate.getSourceAccount().getId().equals(financeItem.getSourceAccount().getId())){
+      toUpdate.setSourceAccount(
+        ControllerUtility.getOrNotFound(accountRepository.findById(financeItem.getSourceAccount().getId()),
+          "Account not found!"));
+      // módosítsuk azt, ahonnan átraktuk a tranzakciót
+      transactionHandler.updateFinanceItemBalanceAnfOrderNumber(financeItem.getSourceAccount().getId());
+    }
 
     toUpdate.setCategory(
       ControllerUtility.getOrNotFound(
@@ -95,19 +99,28 @@ public class FinancialController {
 
     // ha a dátum módosult, helyezzük át
     // ekkor az összeget is kezeljük
-    if (!financeItem.getTransactionDate().equals(toUpdate.getTransactionDate())) {
-      toUpdate.setTransactionDate(financeItem.getTransactionDate());
-      toUpdate.setAmount(financeItem.getAmount());
-      toUpdate.setOrderNumber(Integer.MAX_VALUE);
-      //transactionHandler.setBalanceAndOrderByLastFinanceItem(toUpdate);
-      financeItemRepository.save(toUpdate);
-      transactionHandler.updateFinanceItemBalanceAnfOrderNumber();
-    } else if (financeItem.getAmount().compareTo(toUpdate.getAmount()) != 0) {
-      // ha csak az összeg, a következő elemeket számoljuk újra
-      toUpdate.setAmount(financeItem.getAmount());
-      financeItemRepository.save(toUpdate);
-      transactionHandler.updateFinanceItemBalanceAnfOrderNumber();
-    }
+
+    toUpdate.setTransactionDate(financeItem.getTransactionDate());
+    toUpdate.setAmount(financeItem.getAmount());
+    financeItemRepository.save(toUpdate);
+    transactionHandler.updateFinanceItemBalanceAnfOrderNumber(toUpdate.getSourceAccount().getId());
+
+
+
+
+//    if (!financeItem.getTransactionDate().equals(toUpdate.getTransactionDate())) {
+//      toUpdate.setTransactionDate(financeItem.getTransactionDate());
+//      toUpdate.setAmount(financeItem.getAmount());
+//      toUpdate.setOrderNumber(Integer.MAX_VALUE);
+//      //transactionHandler.setBalanceAndOrderByLastFinanceItem(toUpdate);
+//      financeItemRepository.save(toUpdate);
+//      transactionHandler.updateFinanceItemBalanceAnfOrderNumber(toUpdate.getSourceAccount().getId());
+//    } else if (financeItem.getAmount().compareTo(toUpdate.getAmount()) != 0) {
+//      // ha csak az összeg, a következő elemeket számoljuk újra
+//      toUpdate.setAmount(financeItem.getAmount());
+//      financeItemRepository.save(toUpdate);
+//      transactionHandler.updateFinanceItemBalanceAnfOrderNumber(toUpdate.getSourceAccount().getId());
+//    }
 
     //updateFinanceItems(toUpdate, toUpdate.getOrderNumber());
 
@@ -118,7 +131,8 @@ public class FinancialController {
       financeItemRepository.findById(financeItemId).orElseThrow(
         () -> new BSEntityNotFoundException("Tarnzakció nem található! Id: " + financeItemId));
     FinanceItem financeItemSecond =
-      financeItemRepository.getFinanceItemByOrderNumber(financeItemFirst.getOrderNumber() - 1).orElseThrow(
+      financeItemRepository.getFinanceItemByOrderNumberAndSourceAccount(
+        financeItemFirst.getOrderNumber() - 1, financeItemFirst.getSourceAccount()).orElseThrow(
         () -> new FinancialExceptions("Nem lehet a tranzakciót hátrasorolni, mivel nincs megelőző tranzakció!"));
 
     transactionHandler.changeTransactionOrder(financeItemFirst, financeItemSecond);
@@ -131,7 +145,8 @@ public class FinancialController {
       financeItemRepository.findById(financeItemId).orElseThrow(
         () -> new BSEntityNotFoundException("Tarnzakció nem található! Id: " + financeItemId));
     FinanceItem financeItemFirst =
-      financeItemRepository.getFinanceItemByOrderNumber(financeItemSecond.getOrderNumber() + 1).orElseThrow(
+      financeItemRepository.getFinanceItemByOrderNumberAndSourceAccount(
+        financeItemSecond.getOrderNumber() + 1, financeItemSecond.getSourceAccount()).orElseThrow(
         () -> new FinancialExceptions("Nem lehet a tranzakciót előresorolni, mivel nincs rákövetkező tranzakció!"));
 
     transactionHandler.changeTransactionOrder(financeItemFirst, financeItemSecond);

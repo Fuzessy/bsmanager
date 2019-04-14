@@ -10,7 +10,7 @@ import {FinanceItemCategoryDetailsComponent} from "../finance-item-category-deta
   styleUrls: ['./finance-item-categories.component.scss']
 })
 export class FinanceItemCategoriesComponent implements OnInit {
-  private financeItemCategories: FinancialItemCategory[];
+  financeItemCategories: FinancialItemCategory[];
 
   constructor(private financialService : FinancialService,
               private matDialog : MatDialog) { }

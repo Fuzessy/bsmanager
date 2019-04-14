@@ -130,6 +130,8 @@ export class AddItemComponent implements AfterViewInit {
       .then(_ => {
         this.operationFinished = true;
         this.onOperationFinished.emit();
+        this.initData();
+        this.alertService.showSuccess({message:'Rögzítés sikeres!'});
       })
       .catch( err =>this.alertService.showHttpErrorMessage(err));
   }

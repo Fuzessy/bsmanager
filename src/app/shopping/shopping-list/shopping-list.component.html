@@ -12,21 +12,16 @@
             <span [matBadge]="inProgressCount" matBadgeOverlap="false">Lista</span>
           </ng-template>
 
-          <div class="row justify-content-center container col-12">
-            <table mat-table [dataSource]="dataSourceInProgress" class="col-lg-10 col-sm-12 col-xs-12">
-
-              <!-- Megvettem -->
-              <ng-container matColumnDef="check">
-                <th mat-header-cell *matHeaderCellDef> Megvettem </th>
-                <td mat-cell *matCellDef="let element">
-                  <mat-checkbox (click)="buyFinished(element)"></mat-checkbox>
-                </td>
-              </ng-container>
+          <div style="overflow:auto;">
+            <!--<table mat-table [dataSource]="dataSourceInProgress" style="width:600px;" class="col-lg-10 col-sm-12 col-xs-12">-->
+            <table mat-table [dataSource]="dataSourceInProgress" style="min-width:600px; width:100%">
 
               <!-- name -->
-              <ng-container matColumnDef="name">
+              <ng-container matColumnDef="name" sticky>
                 <th mat-header-cell *matHeaderCellDef> Név </th>
-                <td mat-cell *matCellDef="let element"> {{element.name}} </td>
+                <td mat-cell *matCellDef="let element">
+                  <mat-checkbox (click)="buyFinished(element)">{{element.name}}</mat-checkbox>
+                </td>
               </ng-container>
 
               <!-- category -->
@@ -59,12 +54,21 @@
                 <td mat-cell *matCellDef="let element"> {{element.priority}} </td>
               </ng-container>
 
-              <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+              <!-- operations -->
+              <ng-container matColumnDef="operations">
+                <th mat-header-cell *matHeaderCellDef> Műveletek </th>
+                <td mat-cell *matCellDef="let element">
+                  <mat-icon class="table-action-icon" title="Szerkeszt" (click)="edit(element)">edit</mat-icon>
+                  <mat-icon class="table-action-icon" style="color:darkred;" title="Töröl" (click)="remove(element)">delete</mat-icon>
+                </td>
+              </ng-container>
+
+              <tr mat-header-row *matHeaderRowDef="displayedColumns; sticky: true"></tr>
               <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
 
               <!-- group -->
               <!-- Group header -->
-              <ng-container matColumnDef="groupHeader">
+              <ng-container matColumnDef="groupHeader" sticky>
                 <td colspan="999" mat-cell *matCellDef="let groupBy"><strong>{{groupBy}}</strong></td>
               </ng-container>
 
@@ -74,27 +78,21 @@
           </div>
         </mat-tab>
 
-        <mat-tab label="Már megvásárolt">
+        <mat-tab label="Már megvásárolt" class="row justify-content-center col-12">
 
           <ng-template matTabLabel>
             <span [matBadge]="purchasedCount" matBadgeOverlap="false">Már megvásárolt</span>
           </ng-template>
 
-          <div class="row justify-content-center container col-12">
-            <table mat-table [dataSource]="dataSourcePurchased" class="col-lg-10 col-sm-12 col-xs-12">
-
-              <!-- Megvettem -->
-              <ng-container matColumnDef="check">
-                <th mat-header-cell *matHeaderCellDef> Megvettem </th>
-                <td mat-cell *matCellDef="let element">
-                  <mat-checkbox (click)="buyCancelled(element)"></mat-checkbox>
-                </td>
-              </ng-container>
+          <div style="overflow:auto;">
+            <table mat-table [dataSource]="dataSourcePurchased" style="min-width:600px; width:100%">
 
               <!-- name -->
               <ng-container matColumnDef="name">
                 <th mat-header-cell *matHeaderCellDef> Név </th>
-                <td mat-cell *matCellDef="let element"> {{element.name}} </td>
+                <td mat-cell *matCellDef="let element">
+                  <mat-checkbox (click)="buyCancelled(element)">{{element.name}}</mat-checkbox>
+                </td>
               </ng-container>
 
               <!-- category -->
@@ -127,8 +125,8 @@
                 <td mat-cell *matCellDef="let element"> {{element.priority}} </td>
               </ng-container>
 
-              <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
-              <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
+              <tr mat-header-row *matHeaderRowDef="displayedColumnsPurchased; sticky: true"></tr>
+              <tr mat-row *matRowDef="let row; columns: displayedColumnsPurchased;"></tr>
 
               <!-- group -->
               <!-- Group header -->

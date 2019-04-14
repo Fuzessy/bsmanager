@@ -6,7 +6,8 @@
     <div style="width: 100%">
       <div style="text-align:center; color:white; font-family: Georgia; font-size: 20px;">BS</div>
     </div>
-    <div style="align-items: right">
+    <div style="align-items: right; font-family: cursive;" class="d-inline-flex">
+      {{applicationUser && applicationUser.nickName}}
       <mat-icon title="Kilépés" class="menutoggle"  (click)="logout()">exit_to_app</mat-icon>
     </div>
   </div>

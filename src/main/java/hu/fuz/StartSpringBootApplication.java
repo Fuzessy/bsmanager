@@ -14,6 +14,6 @@ public class StartSpringBootApplication
 {
     public static void main( String[] args ) {
         ConfigurableApplicationContext ctx = SpringApplication.run(StartSpringBootApplication.class);
-        ctx.getBean(Initializer.class).init();
+//        ctx.getBean(Initializer.class).init();
     }
 }

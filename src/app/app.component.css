@@ -30,11 +30,11 @@
   flex-direction:row;
 }
 .sideMenu{
-  width: 230px;
+  width: 250px;
+  min-width: 220px;
   background-color: #202050;
   color: #f5e3da;
   padding:0px 0px 0px 0px;
-  min-width: 100px;
   font-family: 'Averia Serif Libre';
   letter-spacing: 1px;
   background-image: linear-gradient(to right,#0a2650, #2c1a50);

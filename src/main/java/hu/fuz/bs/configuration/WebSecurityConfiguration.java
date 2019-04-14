@@ -30,7 +30,7 @@ public class WebSecurityConfiguration extends WebSecurityConfigurerAdapter {
   @Override
   protected void configure(HttpSecurity http) throws Exception {
     http.csrf().disable().authorizeRequests()
-      .antMatchers("/","/*.js","/*.ico").permitAll()
+      .antMatchers("/","/*.js","/*.ico","/*.css").permitAll()
       // h2 console miatt: http://localhost:8080/h2-console/
       .antMatchers("/h2-console/**").permitAll()
       .anyRequest().authenticated()
