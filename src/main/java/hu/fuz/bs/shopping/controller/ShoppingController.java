@@ -13,12 +13,12 @@ import java.util.List;
 @RequestMapping("/shopping")
 public class ShoppingController {
 
-  @Autowired private ShoppingService shoppingController;
+  @Autowired private ShoppingService shoppingService;
   @Autowired private ApplicationUserRepository applicationUserRepository;
 
   @PostMapping("/shopping-list-item")
   public ShoppingListItem createShoppingListItem(@RequestBody ShoppingListItem shoppingListItem, Principal user){
-    return shoppingController.createShoppingListItem(
+    return shoppingService.createShoppingListItem(
       shoppingListItem,
       applicationUserRepository.findByUserName(user.getName()).get());
   }
@@ -29,20 +29,20 @@ public class ShoppingController {
     @RequestParam(value = "item-status", required = false) ItemStatus itemStatus,
     @RequestParam(value = "item-category", required = false) ItemCategory category,
     @RequestParam(value = "item-category", required = false) String order){
-    return shoppingController.getShoppingListItems(priority,itemStatus,category,order);
+    return shoppingService.getShoppingListItems(priority,itemStatus,category,order);
   }
 
   @PutMapping("/shopping-list-item")
   public ShoppingListItem updateShoppingListItem(@RequestBody ShoppingListItem shoppingListItem, Principal user){
     return
-      shoppingController.updateShoppingListItem(
+      shoppingService.updateShoppingListItem(
         shoppingListItem,
         applicationUserRepository.findByUserName(user.getName()).get());
   }
 
   @GetMapping("/item-category")
-  public  List<ItemCategory> getItemCategories(@RequestParam("alive") boolean onlyAlive){
-    return shoppingController.getItemCategories(onlyAlive);
+  public  List<ItemCategory> getItemCategories(@RequestParam(required = false, name = "alive") boolean onlyAlive){
+    return shoppingService.getItemCategories(onlyAlive);
   }
 
   @GetMapping("/priority")
@@ -53,7 +53,7 @@ public class ShoppingController {
 
   @GetMapping("/item-target")
   public Iterable<ItemTarget> getItemTargets(){
-    return shoppingController.getItemTargets();
+    return shoppingService.getItemTargets();
   }
 
 

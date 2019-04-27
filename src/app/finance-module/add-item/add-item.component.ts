@@ -28,6 +28,7 @@ export class AddItemComponent implements AfterViewInit {
       this.inputFinanceItem = item;
       this.selectedCreditOrDebit = item.amount > 0 ? this.creditOrDebit[1] : this.creditOrDebit[0];
       this.amount = Math.abs(item.amount);
+      this.note = item.note;
 
       this.checkIfDataLoaded().then( () =>{
         this.selectedSourceAccount = this.accounts.find(a => a.id === item.sourceAccount.id);
@@ -192,6 +193,8 @@ export class AddItemComponent implements AfterViewInit {
 
   initData(){
     this.amount = null;
+    this.note = null;
+    this.transactionDateModel = new Date().toISOString().substr(0,10);
     this.selectedSourceAccount = null;
     this.isTransfer = false;
     this.selectedTargetAccount = null;
